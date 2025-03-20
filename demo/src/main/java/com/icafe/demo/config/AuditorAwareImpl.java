@@ -15,9 +15,15 @@ public class AuditorAwareImpl implements AuditorAware<Integer>{
     @Override
     public Optional<Integer> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return null;
+
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() == "anonymousUser") {
+            return Optional.empty();
         }
-        return Optional.of(((UserPrincipal) authentication.getPrincipal()).getUserId());
+
+        if (authentication.getPrincipal() instanceof UserPrincipal userPrincipal) {
+            return Optional.of(userPrincipal.getUserId()); // Đảm bảo UserPrincipal có phương thức getId()
+        }
+
+        return Optional.empty();
     }
 }

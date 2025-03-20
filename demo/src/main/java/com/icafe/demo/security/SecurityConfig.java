@@ -20,6 +20,8 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .cors(cors -> {})
                 .build();
     }
 }

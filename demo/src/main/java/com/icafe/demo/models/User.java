@@ -1,5 +1,7 @@
 package com.icafe.demo.models;
 
+import com.icafe.demo.entity.BaseEntity;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,7 +21,7 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @ToString
-public class User {
+public class User extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")

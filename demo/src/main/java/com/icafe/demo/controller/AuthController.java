@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.icafe.demo.dto.UserDto;
+import com.icafe.demo.dto.UserChangePasswordDTO;
+import com.icafe.demo.dto.UserDTO;
 import com.icafe.demo.entity.Token;
 import com.icafe.demo.enums.RoleEnum;
 import com.icafe.demo.models.Role;
@@ -45,7 +46,7 @@ public class AuthController {
 
     @CrossOrigin
     @PostMapping("/register")
-    public ResponseEntity<Object> registerApi(@RequestBody UserDto user) {
+    public ResponseEntity<Object> registerApi(@RequestBody UserDTO user) {
         try {
             User newUser = new User();
             newUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
@@ -58,26 +59,25 @@ public class AuthController {
             newUser.setCreatedBy(newUser.getId());
             newUser.setUpdatedBy(newUser.getId());
             userRepository.save(newUser);
-            return ResponseEntity.ok("Tạo tài khoản thành công!");
+            return ResponseEntity.ok("Account created successfull!");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra, vui lòng thử lại!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
         }
     }
 
     // API login
     @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserDto user) {
+    public ResponseEntity<?> login(@RequestBody UserDTO user) {
         try {
             UserPrincipal userPrincipal = userService.findByUsername(user.getUsername());
-            User pUser = userRepository.findByUsername(user.getUsername());
 
             if(userPrincipal == null || !new BCryptPasswordEncoder().matches(user.getPassword(), userPrincipal.getPassword())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tên đăng nhập hoặc mật khẩu không đúng!");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The old password is incorrect!");
             }
-            if(pUser.isDeleted()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tài khoản hiện không hoạt động!");
+            if(userPrincipal.isDeleted()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Account has been disabled!");
             }
 
             Token token = new Token();
@@ -86,11 +86,38 @@ public class AuthController {
             token.setCreatedBy(userPrincipal.getUserId());
             token.setUpdatedBy(userPrincipal.getUserId());
             tokenService.createToken(token);
-            return ResponseEntity.ok(token.getToken());
+            return ResponseEntity.ok(token.getToken());  
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra, vui lòng thử lại!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
         }
     }
+
+    @CrossOrigin
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody UserChangePasswordDTO userChangePassword) {
+        try {
+            User user = userRepository.findByUsername(userChangePassword.getUsername());
+            if(user == null || !new BCryptPasswordEncoder().matches(userChangePassword.getOldPassword(), user.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username or password!");
+            }
+
+            // String passwordRegex = "^(?=.*[a-zA-Z])(?=.*\\d).{6,}$";
+            // Pattern pattern = Pattern.compile(passwordRegex);
+            // Matcher matcher = pattern.matcher(userChangePassword.getNewPassword());
+            // if(!matcher.matches()) {
+            //     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Mật khẩu phải có ít nhất 6 ký tự bao gồm cả chữ lẫn số!");
+            // }
+
+            user.setPassword(new BCryptPasswordEncoder().encode(userChangePassword.getNewPassword()));
+            userRepository.save(user);
+            return ResponseEntity.ok("The password has been changed!");
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+        }
+    }
+    
     
 }

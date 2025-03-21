@@ -19,9 +19,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -32,7 +31,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Autowired
     private ITokenService verificationTokenService;
 
-    @SuppressWarnings({ "null", "unchecked" })
+    @SuppressWarnings({ "null" })
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -47,10 +46,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         if (null != user && null != token && token.getTokenExpDate().after(new Date())) {
-            Set<GrantedAuthority> authorities = new HashSet<>();
-            user.getAuthorities().forEach(p -> authorities.add(new SimpleGrantedAuthority((String) p)));
+            GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(user, null, authorities);
+                    new UsernamePasswordAuthenticationToken(user, null, Collections.singletonList(authority));
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

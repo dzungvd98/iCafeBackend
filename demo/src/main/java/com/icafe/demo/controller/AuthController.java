@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.icafe.demo.dto.UserChangePasswordDTO;
 import com.icafe.demo.dto.UserDTO;
+import com.icafe.demo.dto.UserNewPasswordDTO;
 import com.icafe.demo.entity.Token;
 import com.icafe.demo.enums.RoleEnum;
 import com.icafe.demo.models.Role;
@@ -74,7 +75,7 @@ public class AuthController {
             UserPrincipal userPrincipal = userService.findByUsername(user.getUsername());
 
             if(userPrincipal == null || !new BCryptPasswordEncoder().matches(user.getPassword(), userPrincipal.getPassword())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The old password is incorrect!");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is incorrect!");
             }
             if(userPrincipal.isDeleted()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Account has been disabled!");
@@ -113,6 +114,22 @@ public class AuthController {
             userRepository.save(user);
             return ResponseEntity.ok("The password has been changed!");
 
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody UserNewPasswordDTO userNewPassword) {
+        try {
+            User user = userRepository.findByUsername(userNewPassword.getUsername());
+            if(user == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid username!");
+            }
+            user.setPassword(new BCryptPasswordEncoder().encode(userNewPassword.getPassword()));
+            userRepository.save(user);
+            return ResponseEntity.ok("The password has been reseted!");
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");

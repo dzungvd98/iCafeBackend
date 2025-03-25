@@ -2,8 +2,12 @@ package com.icafe.demo.models;
 
 import java.math.BigDecimal;
 
+import com.icafe.demo.enums.Status;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,4 +48,8 @@ public class Product {
 
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal price;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 }   

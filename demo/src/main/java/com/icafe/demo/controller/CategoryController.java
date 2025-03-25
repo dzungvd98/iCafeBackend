@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.icafe.demo.service.CategoryService.ICategoryService;
+import com.icafe.demo.service.ProductCategory.IProductService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,12 +20,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
+
 @RestController
 @RequestMapping("/categories/")
 public class CategoryController {
     @Autowired
     private ICategoryService categoryService;
 
+    @Autowired
+    private IProductService productService;
     
 
     @GetMapping("/")
@@ -70,14 +74,14 @@ public class CategoryController {
         }
     }
 
-    public ICategoryService getCategoryService() {
-        return categoryService;
-    }
-
-    public void setCategoryService(ICategoryService categoryService) {
-        this.categoryService = categoryService;
+    @GetMapping("/{categoryId}/products")
+    public ResponseEntity<?> getListProductByCategory(@PathVariable int categoryId) {
+        try {
+            return ResponseEntity.ok(productService.getListProductByCategory(categoryId));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+        }
     }
     
-
-
 }

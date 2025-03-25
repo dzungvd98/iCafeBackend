@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -95,7 +96,7 @@ public class AuthController {
     }
 
     @CrossOrigin
-    @PostMapping("/change-password")
+    @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody UserChangePasswordDTO userChangePassword) {
         try {
             User user = userRepository.findByUsername(userChangePassword.getUsername());
@@ -120,7 +121,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/reset-password")
+    @PutMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody UserNewPasswordDTO userNewPassword) {
         try {
             User user = userRepository.findByUsername(userNewPassword.getUsername());

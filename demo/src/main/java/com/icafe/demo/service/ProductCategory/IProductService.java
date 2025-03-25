@@ -7,5 +7,7 @@ import com.icafe.demo.models.Product;
 
 public interface IProductService {
     List<Product> getListProductByCategory(int categoryId);
-    public ProductCreateDTO createNewProduct(ProductCreateDTO newProduct);
+    ProductCreateDTO createNewProduct(ProductCreateDTO newProduct);
+    void deleteProductById(int productId);
+
 }

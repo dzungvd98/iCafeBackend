@@ -2,6 +2,8 @@ package com.icafe.demo.models;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +33,7 @@ public class ProductVariant {
 
     @ManyToOne
     @JoinColumn(name = "product_code", referencedColumnName = "product_code", nullable = false)
+    @JsonBackReference
     private Product product;
 
     @ManyToOne

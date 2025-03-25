@@ -34,4 +34,9 @@ public class ProductService implements IProductService{
         return productMapper.toDTO(product);
     }
 
+    @Override
+    public void deleteProductById(int productId) {
+        productRepository.deleteById(productId);
+    }
+
 }

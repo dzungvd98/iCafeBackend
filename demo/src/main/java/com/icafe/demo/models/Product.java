@@ -54,6 +54,9 @@ public class Product {
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal price;
 
+    @Column(name = "have_type", nullable = false)
+    private Boolean haveType;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;

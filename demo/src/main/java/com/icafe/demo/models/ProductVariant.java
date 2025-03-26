@@ -40,10 +40,6 @@ public class ProductVariant {
     @JoinColumn(name = "size_id")
     private Size size;
 
-    @ManyToOne
-    @JoinColumn(name = "type_id")
-    private Type type;
-
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal price;
 } 

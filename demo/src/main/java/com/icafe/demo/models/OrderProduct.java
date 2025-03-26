@@ -2,8 +2,12 @@ package com.icafe.demo.models;
 
 import java.math.BigDecimal;
 
+import com.icafe.demo.enums.ProductType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,12 +41,15 @@ public class OrderProduct {
     @JoinColumn(name = "product_variant_id", nullable = false)
     private ProductVariant productVariant;
 
+    @Enumerated(EnumType.STRING)
+    private ProductType type;
+
     @Column(nullable = false)
     private Integer quantity;
 
     @Column(name = "price_each", nullable = false)
     private BigDecimal priceEach;
 
-    @Column(name = "is_cancel")
-    private Integer isCancel;
+    @Column(name = "is_cancel", nullable = false)
+    private Boolean isCancel;
 }

@@ -28,4 +28,10 @@ public class Size {
 
     @Column(name = "size_name", nullable = false, length = 20)
     private String sizeName;
+
+    public Size(String sizeName) {
+        this.sizeName = sizeName;
+    }
+
+    
 }

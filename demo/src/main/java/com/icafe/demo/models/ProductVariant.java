@@ -32,7 +32,7 @@ public class ProductVariant {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "product_code", referencedColumnName = "product_code", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     @JsonBackReference
     private Product product;
 
@@ -40,6 +40,6 @@ public class ProductVariant {
     @JoinColumn(name = "size_id")
     private Size size;
 
-    @Column(precision = 10, scale = 2, nullable = false)
-    private BigDecimal price;
+    @Column(name = "add_price", precision = 10, scale = 2, nullable = false)
+    private BigDecimal addPrice;
 } 

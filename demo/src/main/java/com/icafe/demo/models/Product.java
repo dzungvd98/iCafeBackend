@@ -51,8 +51,8 @@ public class Product {
     @Column(name = "image_url",length = 1000)
     private String imageUrl;
 
-    @Column(precision = 10, scale = 2, nullable = false)
-    private BigDecimal price;
+    @Column(name = "base_price", precision = 10, scale = 2, nullable = false)
+    private BigDecimal basePrice;
 
     @Column(name = "have_type", nullable = false)
     private Boolean haveType;
@@ -61,7 +61,7 @@ public class Product {
     @Column(name = "status", nullable = false)
     private Status status;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     List<ProductVariant> productVariants;
 }   

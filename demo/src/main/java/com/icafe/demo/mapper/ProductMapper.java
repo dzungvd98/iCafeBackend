@@ -2,7 +2,7 @@ package com.icafe.demo.mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.icafe.demo.dto.ProductCreateDTO;
+import com.icafe.demo.dto.ProductRequestDTO;
 import com.icafe.demo.enums.Status;
 import com.icafe.demo.models.Category;
 import com.icafe.demo.models.Product;
@@ -15,16 +15,16 @@ public class ProductMapper {
         this.modelMapper = modelMapper;
     }
 
-    public Product toEntity(ProductCreateDTO dto, Category category) {
+    public Product toEntity(ProductRequestDTO dto, Category category) {
         Product product = modelMapper.map(dto, Product.class);
+        product.setId(null);
         product.setCategory(category);
         product.setStatus(Status.AVAILABLE); // Gán status mặc định
         return product;
     }
 
-    public ProductCreateDTO toDTO(Product product) {
-        return modelMapper.map(product, ProductCreateDTO.class);
+    public ProductRequestDTO toDTO(Product product) {
+        return modelMapper.map(product, ProductRequestDTO.class);
     }
     
-   
 }

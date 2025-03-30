@@ -36,5 +36,5 @@ public class ProductIngredient {
     private Warehouse ingredient;
 
     @Column(nullable = false)
-    private Float quantity;
+    private Integer quantity;
 }

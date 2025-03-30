@@ -1,5 +1,5 @@
 package com.icafe.demo.enums;
 
 public enum TransactionType {
-    IMPORT, EXPORT, SALE
+    IMPORT, EXPORT
 }

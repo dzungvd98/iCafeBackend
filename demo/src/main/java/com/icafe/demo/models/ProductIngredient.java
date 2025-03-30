@@ -1,10 +1,5 @@
 package com.icafe.demo.models;
 
-
-import java.math.BigDecimal;
-
-import com.icafe.demo.entity.BaseEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,30 +15,26 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "imports")
+@Table(name = "product_ingredients")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Import extends BaseEntity{
+public class ProductIngredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "import_id")
-    private Integer importId;
+    @Column(name = "product_ingredient_id")
+    private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "ingredient_id")
-    private Ingredient ingredient;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "warehouse_id", nullable = false)
+    private Warehouse ingredient;
+
     @Column(nullable = false)
-    private Integer quantity;
-
-    @Column(precision = 10, scale = 2, nullable = false)
-    private BigDecimal price;
-
+    private Float quantity;
 }

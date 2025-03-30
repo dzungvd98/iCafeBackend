@@ -62,6 +62,13 @@ public class Product extends BaseEntity{
     @Column(name = "status", nullable = false)
     private Status status;
 
+    @Column(name= "is_custom", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean isCustom;
+
+    @ManyToOne
+    @JoinColumn(name = "warehouse_id")
+    private Warehouse warehouse;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     List<ProductVariant> productVariants;

@@ -1,9 +1,11 @@
 package com.icafe.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.icafe.demo.models.Warehouse;
 
-public interface IWarehouseRepository extends JpaRepository<Integer, Warehouse>{
+@Repository
+public interface IWarehouseRepository extends JpaRepository<Warehouse, Integer>{
     
 }

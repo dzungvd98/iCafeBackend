@@ -62,8 +62,8 @@ public class Product extends BaseEntity{
     @Column(name = "status", nullable = false)
     private Status status;
 
-    @Column(name= "is_custom", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean isCustom;
+    @Column(name= "is_direct_sale", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isDirectSale;
 
     @ManyToOne
     @JoinColumn(name = "warehouse_id")

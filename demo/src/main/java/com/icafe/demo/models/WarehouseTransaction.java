@@ -40,8 +40,8 @@ public class WarehouseTransaction extends BaseEntity{
     @JoinColumn(name = "warehouse_id", nullable = false)
     private Warehouse warehouse;
 
-    @Column(nullable = false, columnDefinition = "FLOAT DEFAULT 0")
-    private Float quantity;
+    @Column(nullable = false)
+    private Integer quantity;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

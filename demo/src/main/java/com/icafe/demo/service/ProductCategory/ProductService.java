@@ -16,10 +16,12 @@ import com.icafe.demo.models.Category;
 import com.icafe.demo.models.Product;
 import com.icafe.demo.models.ProductVariant;
 import com.icafe.demo.models.Size;
+import com.icafe.demo.models.Warehouse;
 import com.icafe.demo.repository.ICategoryRepository;
 import com.icafe.demo.repository.IProductRepository;
 import com.icafe.demo.repository.IProductVariantRepository;
 import com.icafe.demo.repository.ISizeRepository;
+import com.icafe.demo.repository.IWarehouseRepository;
 
 @Service
 public class ProductService implements IProductService{
@@ -34,6 +36,9 @@ public class ProductService implements IProductService{
 
     @Autowired
     private ISizeRepository sizeRepository;
+
+    @Autowired
+    private IWarehouseRepository warehouseRepository;
 
     @Autowired
     private ProductMapper productMapper;
@@ -64,6 +69,20 @@ public class ProductService implements IProductService{
             variant.setSize(size);
             variants.add(variant);
         }
+
+        if(request.isDirectSale()) {
+            Warehouse warehouse = new Warehouse();
+            warehouse.setName(product.getProductName());
+            warehouse.setIsDirectSale(true);
+            warehouse.setMinQuantity(0);
+            warehouse.setQuantity(0);
+
+            warehouse = warehouseRepository.save(warehouse);
+            product.setWarehouse(warehouse);
+            product.setIsDirectSale(true);
+        }
+
+
         product.setProductVariants(variants);
         return productRepository.save(product);
     }
@@ -93,6 +112,12 @@ public class ProductService implements IProductService{
             variant.setSize(size);
             variants.add(variant);
         }
+
+        if(product.getIsDirectSale()) {
+            Warehouse warehouse = product.getWarehouse();
+            warehouse.setName(request.getProductName());
+        }
+        
         product.setProductVariants(variants);
         return productRepository.save(product);
     }

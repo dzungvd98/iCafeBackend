@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.icafe.demo.dto.ProductRequestDTO;
 import com.icafe.demo.dto.ProductVariantRequestDTO;
+import com.icafe.demo.enums.Status;
 import com.icafe.demo.mapper.ProductMapper;
 import com.icafe.demo.mapper.ProductVariantMapper;
 import com.icafe.demo.models.Category;
@@ -40,8 +41,13 @@ public class ProductService implements IProductService{
     @Autowired
     private ProductVariantMapper productVariantMapper;
 
+    @Override
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
+    }
+
     public List<Product> getListProductByCategory(int categoryId) {
-        return productRepository.findByCategoryId(categoryId);
+        return productRepository.findByCategoryIdAndStatusAndDeleted(categoryId, Status.AVAILABLE, false);
     }
 
     @Transactional
@@ -60,13 +66,6 @@ public class ProductService implements IProductService{
         }
         product.setProductVariants(variants);
         return productRepository.save(product);
-    }
-
-    
-
-    @Override
-    public void deleteProductById(int productId) {
-        productRepository.deleteById(productId);
     }
 
     @Transactional
@@ -96,6 +95,34 @@ public class ProductService implements IProductService{
         }
         product.setProductVariants(variants);
         return productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProductById(int productId) {
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new RuntimeException("Product not found!"));
+        
+        product.setDeleted(true);
+        productRepository.save(product);
+    }
+
+    
+
+    @Override
+    public void recoverDeletedProduct(int productId) {
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new RuntimeException("Product not found!"));
+        
+        product.setDeleted(false);
+        productRepository.save(product);
+    }
+
+    @Override
+    public void changeProductStatus(int productId, Status status) {
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new RuntimeException("Product not found!"));
+        product.setStatus(status);
+        productRepository.save(product);
     }
 
 }

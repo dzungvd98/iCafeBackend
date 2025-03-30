@@ -5,12 +5,10 @@ import java.math.BigDecimal;
 import com.icafe.demo.entity.BaseEntity;
 import com.icafe.demo.enums.TransactionType;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,7 +34,7 @@ public class WarehouseTransaction extends BaseEntity{
     @Column(name = "warehouse_transaction_id")
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "warehouse_id", nullable = false)
     private Warehouse warehouse;
 

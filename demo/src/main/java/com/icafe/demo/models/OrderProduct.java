@@ -2,6 +2,7 @@ package com.icafe.demo.models;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.icafe.demo.enums.ProductType;
 
 import jakarta.persistence.Column;
@@ -35,14 +36,17 @@ public class OrderProduct {
 
     @ManyToOne
     @JoinColumn(name = "order_code", referencedColumnName = "order_code", nullable = false)
+    @JsonBackReference
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "product_variant_id", nullable = false)
-    private ProductVariant productVariant;
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
 
     @Enumerated(EnumType.STRING)
     private ProductType type;
+
+    private String size;
 
     @Column(nullable = false)
     private Integer quantity;

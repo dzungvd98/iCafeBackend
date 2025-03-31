@@ -16,5 +16,6 @@ public class ProductRequestDTO {
     private Integer categoryId;
     private Boolean haveType;
     private List<ProductVariantRequestDTO> productVariants;
-    private boolean isDirectSale;
+    private Boolean isDirectSale;
+    private WarehouseRequestDTO item;
 }   

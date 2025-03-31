@@ -23,6 +23,8 @@ import com.icafe.demo.repository.IProductVariantRepository;
 import com.icafe.demo.repository.ISizeRepository;
 import com.icafe.demo.repository.IWarehouseRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class ProductService implements IProductService{
     @Autowired
@@ -58,7 +60,7 @@ public class ProductService implements IProductService{
     @Transactional
     public Product createNewProduct(ProductRequestDTO request) {
         Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Category not found!"));
         Product product = productMapper.toEntity(request, category);
 
         List<ProductVariant> variants = new ArrayList<>();
@@ -69,13 +71,14 @@ public class ProductService implements IProductService{
             variant.setSize(size);
             variants.add(variant);
         }
-
-        if(request.isDirectSale()) {
+        
+        if(request.getIsDirectSale()) {
             Warehouse warehouse = new Warehouse();
             warehouse.setName(product.getProductName());
             warehouse.setIsDirectSale(true);
-            warehouse.setMinQuantity(0);
+            warehouse.setMinQuantity(request.getItem().getMinQuantity());
             warehouse.setQuantity(0);
+            warehouse.setUnit(request.getItem().getUnit());
 
             warehouse = warehouseRepository.save(warehouse);
             product.setWarehouse(warehouse);
@@ -90,10 +93,10 @@ public class ProductService implements IProductService{
     @Transactional
     public Product updateProduct(int productId, ProductRequestDTO request) {
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new RuntimeException("Product not found!"));
+            .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
         
         Category category = categoryRepository.findById(request.getCategoryId())
-            .orElseThrow(() -> new RuntimeException("Category not found"));
+            .orElseThrow(() -> new EntityNotFoundException("Category not found"));
     
         product.setProductCode(request.getProductCode());
         product.setCategory(category);
@@ -116,6 +119,8 @@ public class ProductService implements IProductService{
         if(product.getIsDirectSale()) {
             Warehouse warehouse = product.getWarehouse();
             warehouse.setName(request.getProductName());
+            warehouse.setUnit(request.getItem().getUnit());
+            warehouse.setMinQuantity(request.getItem().getMinQuantity());
         }
         
         product.setProductVariants(variants);
@@ -125,7 +130,7 @@ public class ProductService implements IProductService{
     @Override
     public void deleteProductById(int productId) {
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new RuntimeException("Product not found!"));
+            .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
         
         product.setDeleted(true);
         productRepository.save(product);
@@ -136,7 +141,7 @@ public class ProductService implements IProductService{
     @Override
     public void recoverDeletedProduct(int productId) {
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new RuntimeException("Product not found!"));
+            .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
         
         product.setDeleted(false);
         productRepository.save(product);
@@ -145,7 +150,7 @@ public class ProductService implements IProductService{
     @Override
     public void changeProductStatus(int productId, Status status) {
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new RuntimeException("Product not found!"));
+            .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
         product.setStatus(status);
         productRepository.save(product);
     }

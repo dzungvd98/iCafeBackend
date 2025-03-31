@@ -45,9 +45,6 @@ public class WarehouseTransaction extends BaseEntity{
     @Column(nullable = false)
     private TransactionType type;
 
-    @Column(name = "time_use")
-    private Integer timeUse;
-
     @Column(name = "total_price", precision = 10, scale = 2)
     private BigDecimal totalPrice; 
 }

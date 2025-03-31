@@ -3,6 +3,7 @@ package com.icafe.demo.models;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.icafe.demo.entity.BaseEntity;
 import com.icafe.demo.enums.Status;
@@ -72,4 +73,9 @@ public class Product extends BaseEntity{
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     List<ProductVariant> productVariants;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    @JsonManagedReference
+    List<ProductIngredient> productIngredients;
 }   

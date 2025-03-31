@@ -2,9 +2,13 @@ package com.icafe.demo.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.icafe.demo.dto.ProductIngredientRequestDTO;
 import com.icafe.demo.dto.ProductRequestDTO;
 import com.icafe.demo.enums.Status;
 import com.icafe.demo.service.ProductCategory.IProductService;
+import com.icafe.demo.service.ProductIngredientService.IProductIngredientService;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +33,9 @@ import org.springframework.web.bind.annotation.PatchMapping;
 public class ProductController {
     @Autowired
     private IProductService productService;
+
+    @Autowired
+    private IProductIngredientService productIngredientService;
 
     @GetMapping
     public ResponseEntity<?> getAllProducts() {
@@ -92,6 +99,47 @@ public class ProductController {
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+        }
+    }
+
+    @GetMapping("/{productId}/ingredients")
+    public ResponseEntity<?> getIngrediensOfProduct(int productId) {
+        try {
+            return ResponseEntity.ok(productIngredientService.getAllIngredientsOfProduct(productId));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+    }
+    
+    @PostMapping("/{productId}/ingredients")
+    public ResponseEntity<?> createProductIngredients(int productId,@RequestBody List<ProductIngredientRequestDTO> ingredients) {
+        try {
+            return ResponseEntity.ok(productIngredientService.createNewProductIngredients(productId, ingredients));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+    }
+    
+    @PutMapping("/{productId}/ingredients")
+    public ResponseEntity<?> updateProductIngredients(int productId,@RequestBody List<ProductIngredientRequestDTO> ingredients) {
+        try {
+            return ResponseEntity.ok(productIngredientService.updateProductIngredients(productId, ingredients));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+    }
+
+    @DeleteMapping("/{productId}/ingredients")
+    public ResponseEntity<?> updateProductIngredients(int productId) {
+        try {
+            productIngredientService.deleteProductIngredientsOfProductId(productId);
+            return ResponseEntity.ok("Recipe is deleted!");
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
     }
     

@@ -13,6 +13,5 @@ public class WarehouseTransactionRequestDTO {
     private Integer wareHouseId;
     private Integer quantity;
     private TransactionType type;
-    private Integer timeUse;
     private BigDecimal totalPrice;
 }

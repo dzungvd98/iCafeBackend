@@ -55,7 +55,6 @@ public class WarehouseTransactionService implements IWarehouseTransactionService
         warehouse.setQuantity(updatedQuantity); 
         
         transaction.setQuantity(transactionRequest.getQuantity());
-        transaction.setTimeUse(transactionRequest.getTimeUse());
         transaction.setTotalPrice(transactionRequest.getTotalPrice());
         transaction.setWarehouse(warehouse);
         

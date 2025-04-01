@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.icafe.demo.dto.OrderProductRequestDTO;
 import com.icafe.demo.dto.OrderRequestDTO;
+import com.icafe.demo.dto.OrderStatisticsResponseDTO;
 import com.icafe.demo.enums.OrderStatus;
 import com.icafe.demo.models.Order;
 import com.icafe.demo.models.OrderProduct;
@@ -23,6 +24,7 @@ import com.icafe.demo.repository.IOrderRepository;
 import com.icafe.demo.repository.IProductVariantRepository;
 import com.icafe.demo.specification.OrderSpecification;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -32,6 +34,9 @@ public class OrderService implements IOrderService{
 
     @Autowired
     private IProductVariantRepository productVariantRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Transactional
     public Order createNewOrder(OrderRequestDTO orderRequest) {
@@ -121,13 +126,11 @@ public class OrderService implements IOrderService{
         return orderRepository.save(order);
     }
 
-
-    @Override
     public void deleteOrder(String orderCode) {
         Order order = orderRepository.findByOrderCode(orderCode)
             .orElseThrow(() -> new EntityNotFoundException("Order with code " + orderCode + " not found!")); 
 
-        if(!order.getStatus().equals(OrderStatus.CANCELED))  {
+        if(!order.getStatus().equals(OrderStatus.CANCELLED))  {
             throw new IllegalArgumentException("Just can delete order cancelled!");
         }
 
@@ -141,5 +144,41 @@ public class OrderService implements IOrderService{
         long orderCount = orderRepository.count(OrderSpecification.hasOrderDateOn(now)) + 1;
         String sequencePart = String.format("%02d", orderCount);
         return "HD" + datePart + "-" + sequencePart;
+    }
+
+    public void changeOrderStatus(String orderCode, OrderStatus status) {
+        Order order = orderRepository.findByOrderCode(orderCode)
+            .orElseThrow(() -> new EntityNotFoundException("Not found order with code " + orderCode));
+
+        if(order.getStatus().equals(OrderStatus.PROCESSING) && status.equals(OrderStatus.CANCELLED)) {
+            throw new IllegalArgumentException("Can not cancel order in progress!");
+        }
+        
+        if(order.getStatus().equals(OrderStatus.COMPLETED) || order.getStatus().equals(OrderStatus.CANCELLED)) {
+            throw new IllegalArgumentException("Can not change order with status completed or cancelled!");
+        }
+
+        order.setStatus(status);
+        orderRepository.save(order);
+    }
+
+
+
+
+
+    @Override
+    public OrderStatisticsResponseDTO getOrderSatistics(LocalDateTime startDate, LocalDateTime endDate) {
+        OrderStatisticsResponseDTO statistics = new OrderStatisticsResponseDTO();
+        long totalOrder = orderRepository.countByCreatedAtBetween(startDate, endDate);
+        long successfullOrder = orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.COMPLETED);
+        long cancelledOrder = orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.CANCELLED);
+        Double averageOrderValue = OrderSpecification.getAverageOrderValueByOrderDateBetween(entityManager, startDate, endDate);
+
+        statistics.setAverageOrderValue(averageOrderValue);
+        statistics.setCancelledOrder(cancelledOrder);
+        statistics.setTotalOrder(totalOrder);
+        statistics.setSuccessfullOrder(successfullOrder);
+
+        return statistics;
     }
 }

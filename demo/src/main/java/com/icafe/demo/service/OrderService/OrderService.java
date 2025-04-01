@@ -24,7 +24,6 @@ import com.icafe.demo.repository.IOrderRepository;
 import com.icafe.demo.repository.IProductVariantRepository;
 import com.icafe.demo.specification.OrderSpecification;
 
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -34,9 +33,6 @@ public class OrderService implements IOrderService{
 
     @Autowired
     private IProductVariantRepository productVariantRepository;
-
-    @Autowired
-    private EntityManager entityManager;
 
     @Transactional
     public Order createNewOrder(OrderRequestDTO orderRequest) {
@@ -163,16 +159,16 @@ public class OrderService implements IOrderService{
     }
 
 
-
-
-
     @Override
     public OrderStatisticsResponseDTO getOrderSatistics(LocalDateTime startDate, LocalDateTime endDate) {
+        if(startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date can't bigger than end date!");
+        }
         OrderStatisticsResponseDTO statistics = new OrderStatisticsResponseDTO();
         long totalOrder = orderRepository.countByCreatedAtBetween(startDate, endDate);
         long successfullOrder = orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.COMPLETED);
         long cancelledOrder = orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.CANCELLED);
-        Double averageOrderValue = OrderSpecification.getAverageOrderValueByOrderDateBetween(entityManager, startDate, endDate);
+        Double averageOrderValue = orderRepository.getAverageOrderValue(startDate, endDate);
 
         statistics.setAverageOrderValue(averageOrderValue);
         statistics.setCancelledOrder(cancelledOrder);

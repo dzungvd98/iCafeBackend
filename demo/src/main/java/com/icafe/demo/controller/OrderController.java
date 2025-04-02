@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.icafe.demo.dto.OrderRequestDTO;
 import com.icafe.demo.enums.OrderStatus;
+import com.icafe.demo.service.OrderProductService.IOrderProductService;
 import com.icafe.demo.service.OrderService.IOrderService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class OrderController {
     @Autowired
     private IOrderService orderService;
+
+    @Autowired
+    private IOrderProductService orderProductService;
 
     @PostMapping
     public ResponseEntity<?> createNewOrder(@RequestBody OrderRequestDTO orderRequest) {
@@ -62,6 +66,17 @@ public class OrderController {
         try {
             orderService.changeOrderStatus(orderCode, status);
             return ResponseEntity.ok("Status of order with code " + orderCode + " have been changed!");
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/cancel-order-product/{orderProductId}")
+    public ResponseEntity<?> changeOrderStatus(@PathVariable int orderProductId) {
+        try {
+            orderProductService.cancelOrderProduct(orderProductId);
+            return ResponseEntity.ok("Product have been cancel!");
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

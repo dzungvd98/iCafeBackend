@@ -141,6 +141,7 @@ public class OrderService implements IOrderService{
         return "HD" + datePart + "-" + sequencePart;
     }
 
+    @Transactional
     public void changeOrderStatus(String orderCode, OrderStatus status) {
         Order order = orderRepository.findByOrderCode(orderCode)
             .orElseThrow(() -> new EntityNotFoundException("Not found order with code " + orderCode));
@@ -151,6 +152,10 @@ public class OrderService implements IOrderService{
         
         if(order.getStatus().equals(OrderStatus.COMPLETED) || order.getStatus().equals(OrderStatus.CANCELLED)) {
             throw new IllegalArgumentException("Can not change order with status completed or cancelled!");
+        }
+
+        if(status.equals(OrderStatus.CANCELLED)) {
+            order.getOrderProducts().forEach(op -> op.setIsCancel(true));
         }
 
         order.setStatus(status);

@@ -1,11 +1,6 @@
 package com.icafe.demo.controller;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.icafe.demo.dto.OrderRequestDTO;
-import com.icafe.demo.dto.OrderStatisticsResponseDTO;
 import com.icafe.demo.enums.OrderStatus;
 import com.icafe.demo.service.OrderService.IOrderService;
 
@@ -23,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.GetMapping;
 
 
 
@@ -74,20 +67,5 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
-    @GetMapping("/statistics")
-    public ResponseEntity<?> getStatisticOfOrder(@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
-                                                @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate) {
-        try {
-            LocalDateTime startDateTime = startDate.atStartOfDay();
-            LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX); 
-            OrderStatisticsResponseDTO statistics = orderService.getOrderSatistics(startDateTime, endDateTime);
-            return ResponseEntity.ok(statistics);
-        } catch (Exception e) {
-            System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-    
     
 }

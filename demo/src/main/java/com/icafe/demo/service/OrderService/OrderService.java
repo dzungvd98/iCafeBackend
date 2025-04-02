@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.icafe.demo.dto.OrderProductRequestDTO;
 import com.icafe.demo.dto.OrderRequestDTO;
-import com.icafe.demo.dto.OrderStatisticsResponseDTO;
 import com.icafe.demo.enums.OrderStatus;
 import com.icafe.demo.models.Order;
 import com.icafe.demo.models.OrderProduct;
@@ -159,22 +158,5 @@ public class OrderService implements IOrderService{
     }
 
 
-    @Override
-    public OrderStatisticsResponseDTO getOrderSatistics(LocalDateTime startDate, LocalDateTime endDate) {
-        if(startDate.isAfter(endDate)) {
-            throw new IllegalArgumentException("Start date can't bigger than end date!");
-        }
-        OrderStatisticsResponseDTO statistics = new OrderStatisticsResponseDTO();
-        long totalOrder = orderRepository.countByCreatedAtBetween(startDate, endDate);
-        long successfullOrder = orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.COMPLETED);
-        long cancelledOrder = orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.CANCELLED);
-        Double averageOrderValue = orderRepository.getAverageOrderValue(startDate, endDate);
-
-        statistics.setAverageOrderValue(averageOrderValue);
-        statistics.setCancelledOrder(cancelledOrder);
-        statistics.setTotalOrder(totalOrder);
-        statistics.setSuccessfullOrder(successfullOrder);
-
-        return statistics;
-    }
+    
 }

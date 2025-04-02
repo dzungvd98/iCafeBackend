@@ -56,4 +56,5 @@ public class OrderProduct {
 
     @Column(name = "is_cancel", nullable = false)
     private Boolean isCancel;
+
 }

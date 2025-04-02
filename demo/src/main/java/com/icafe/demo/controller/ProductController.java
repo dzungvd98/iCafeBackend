@@ -8,6 +8,9 @@ import com.icafe.demo.enums.Status;
 import com.icafe.demo.service.ProductCategory.IProductService;
 import com.icafe.demo.service.ProductIngredientService.IProductIngredientService;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +41,9 @@ public class ProductController {
     private IProductIngredientService productIngredientService;
 
     @GetMapping
-    public ResponseEntity<?> getAllProducts() {
+    public ResponseEntity<?> getAllProducts(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) @Max(20) int size) {
         try {
-            return ResponseEntity.ok(productService.getAllProducts());
+            return ResponseEntity.ok(productService.getAllProducts(page, size));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");

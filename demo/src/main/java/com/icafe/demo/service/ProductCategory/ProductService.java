@@ -2,12 +2,18 @@ package com.icafe.demo.service.ProductCategory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.icafe.demo.dto.ProductRequestDTO;
+import com.icafe.demo.dto.ProductResponseDTO;
 import com.icafe.demo.dto.ProductVariantRequestDTO;
 import com.icafe.demo.enums.Status;
 import com.icafe.demo.mapper.ProductMapper;
@@ -49,8 +55,20 @@ public class ProductService implements IProductService{
     private ProductVariantMapper productVariantMapper;
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public Page<ProductResponseDTO> getAllProducts(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productPage = productRepository.findAll(pageable);
+        List<ProductResponseDTO> productResponseDTOs = productPage.getContent()
+            .stream()
+            .map(product -> new ProductResponseDTO(
+                product.getProductCode(),
+                product.getProductName(),
+                product.getCategory().getCategoryName(),
+                product.getBasePrice(),
+                product.getStatus().equals(Status.AVAILABLE) ? true : false
+            )).collect(Collectors.toList());
+        
+        return new PageImpl<>(productResponseDTOs, pageable, productPage.getTotalElements());
     }
 
     public List<Product> getListProductByCategory(int categoryId) {

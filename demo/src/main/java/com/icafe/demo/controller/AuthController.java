@@ -17,7 +17,6 @@ import com.icafe.demo.dto.UserChangePasswordDTO;
 import com.icafe.demo.dto.UserDTO;
 import com.icafe.demo.dto.UserNewPasswordDTO;
 import com.icafe.demo.entity.Token;
-import com.icafe.demo.enums.RoleEnum;
 import com.icafe.demo.models.Role;
 import com.icafe.demo.models.User;
 import com.icafe.demo.repository.IRoleRepository;
@@ -46,6 +45,8 @@ public class AuthController {
     @Autowired
     private IRoleRepository iRole;
 
+    private final String ROLE_STAFF = "STAFF";
+
     @CrossOrigin
     @PostMapping("/register")
     public ResponseEntity<Object> registerApi(@RequestBody UserDTO user) {
@@ -53,7 +54,7 @@ public class AuthController {
             User newUser = new User();
             newUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
             newUser.setUsername(user.getUsername());
-            Role staffRole = iRole.findByRoleName(RoleEnum.STAFF).get();
+            Role staffRole = iRole.findByRoleName(ROLE_STAFF).get();
             newUser.setRole(staffRole);
             newUser.setCreatedAt(LocalDateTime.now());
             newUser.setUpdatedAt(LocalDateTime.now());

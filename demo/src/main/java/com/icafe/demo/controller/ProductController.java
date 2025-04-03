@@ -41,9 +41,11 @@ public class ProductController {
     private IProductIngredientService productIngredientService;
 
     @GetMapping
-    public ResponseEntity<?> getAllProducts(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) @Max(20) int size) {
+    public ResponseEntity<?> getProducts(@RequestParam(defaultValue = "") String keyword,
+                                        @RequestParam(defaultValue = "0") @Min(0) int page, 
+                                        @RequestParam(defaultValue = "10") @Min(1) @Max(20) int size) {
         try {
-            return ResponseEntity.ok(productService.getAllProducts(page, size));
+            return ResponseEntity.ok(productService.getProducts(keyword, page, size));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
@@ -143,6 +145,16 @@ public class ProductController {
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+        }
+    }
+
+    @GetMapping("/{productId}/detail")
+    public ResponseEntity<?> getProductDetail(int productId) {
+        try {
+            return ResponseEntity.ok(productService.getProductDetail(productId));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
     

@@ -9,12 +9,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.icafe.demo.dto.ProductDetailResponseDTO;
 import com.icafe.demo.dto.ProductRequestDTO;
 import com.icafe.demo.dto.ProductResponseDTO;
 import com.icafe.demo.dto.ProductVariantRequestDTO;
+import com.icafe.demo.dto.ProductVariantResponseDTO;
 import com.icafe.demo.enums.Status;
 import com.icafe.demo.mapper.ProductMapper;
 import com.icafe.demo.mapper.ProductVariantMapper;
@@ -28,6 +31,7 @@ import com.icafe.demo.repository.IProductRepository;
 import com.icafe.demo.repository.IProductVariantRepository;
 import com.icafe.demo.repository.ISizeRepository;
 import com.icafe.demo.repository.IWarehouseRepository;
+import com.icafe.demo.specification.ProductSpecification;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -55,18 +59,24 @@ public class ProductService implements IProductService{
     private ProductVariantMapper productVariantMapper;
 
     @Override
-    public Page<ProductResponseDTO> getAllProducts(int page, int size) {
+    public Page<ProductResponseDTO> getProducts(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Product> productPage = productRepository.findAll(pageable);
-        List<ProductResponseDTO> productResponseDTOs = productPage.getContent()
-            .stream()
-            .map(product -> new ProductResponseDTO(
+        Specification<Product> spec = Specification.where(ProductSpecification.hasSearchKeyword(keyword));
+        Page<Product> productPage = productRepository.findAll(spec, pageable);
+        List<ProductResponseDTO> productResponseDTOs = productPage.getContent().stream().map(product -> {
+            String sizes = product.getProductVariants().stream()
+                .map(variant -> variant.getSize().getSizeName()) 
+                .collect(Collectors.joining(", "));
+    
+            return new ProductResponseDTO(
                 product.getProductCode(),
                 product.getProductName(),
                 product.getCategory().getCategoryName(),
                 product.getBasePrice(),
-                product.getStatus().equals(Status.AVAILABLE) ? true : false
-            )).collect(Collectors.toList());
+                product.getStatus().equals(Status.AVAILABLE),
+                sizes
+            );
+        }).collect(Collectors.toList());
         
         return new PageImpl<>(productResponseDTOs, pageable, productPage.getTotalElements());
     }
@@ -94,9 +104,9 @@ public class ProductService implements IProductService{
             Warehouse warehouse = new Warehouse();
             warehouse.setName(product.getProductName());
             warehouse.setIsDirectSale(true);
-            warehouse.setMinQuantity(request.getItem().getMinQuantity());
+            warehouse.setMinQuantity(0);
             warehouse.setQuantity(0);
-            warehouse.setUnit(request.getItem().getUnit());
+            warehouse.setUnit("");
 
             warehouse = warehouseRepository.save(warehouse);
             product.setWarehouse(warehouse);
@@ -171,6 +181,35 @@ public class ProductService implements IProductService{
             .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
         product.setStatus(status);
         productRepository.save(product);
+    }
+
+    @Override
+    public ProductDetailResponseDTO getProductDetail(int productId) {
+        Product product = productRepository.findById(productId)
+            .orElseThrow(() -> new EntityNotFoundException("Not found product with id " + productId));
+        if(product.isDeleted()) {
+            throw new IllegalArgumentException("Can't get detail of deleted product!");
+        }
+        ProductDetailResponseDTO response = ProductDetailResponseDTO.builder()
+                        .basePrice(product.getBasePrice())
+                        .categoryId(product.getCategory().getId())
+                        .categoryName(product.getCategory().getCategoryName())
+                        .haveType(product.getHaveType())
+                        .isDirectSale(product.getIsDirectSale())
+                        .isAvailable(product.getStatus().equals(Status.AVAILABLE) ? true : false)
+                        .urlImage(product.getImageUrl())
+                        .productCode(product.getProductCode())
+                        .productName(product.getProductName())
+                        .productId(product.getId())
+                        .build();
+        List<ProductVariantResponseDTO> variants = product.getProductVariants().stream()
+            .map(vari -> new ProductVariantResponseDTO(
+                vari.getSize().getSizeName(),
+                vari.getAddPrice()
+            )).collect(Collectors.toList());
+
+        response.setVariants(variants);
+        return response;
     }
 
 }

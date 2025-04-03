@@ -33,10 +33,9 @@ public class Warehouse extends BaseEntity{
     @Column(length = 50)
     private String unit;
 
-    @Column(nullable = false)
     private Integer quantity;
 
-    @Column(name = "min_quantity", nullable = false)
+    @Column(name = "min_quantity")
     private Integer minQuantity;
 
     @Column(name = "is_direct_sale", columnDefinition = "BOOLEAN DEFAULT FALSE")

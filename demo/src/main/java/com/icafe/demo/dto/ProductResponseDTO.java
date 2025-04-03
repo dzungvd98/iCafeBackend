@@ -13,7 +13,7 @@ public class ProductResponseDTO {
     private String categoryName;
     private BigDecimal basePrice;
     private Boolean isAvailable;
-    // private String sizes;
+    private String sizes;
 
 
 }

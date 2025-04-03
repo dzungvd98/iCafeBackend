@@ -75,6 +75,7 @@ public class ProductService implements IProductService{
                 product.getCategory().getCategoryName(),
                 product.getBasePrice(),
                 product.getStatus().equals(Status.AVAILABLE),
+                product.getImageUrl(),
                 sizes
             );
         }).collect(Collectors.toList());

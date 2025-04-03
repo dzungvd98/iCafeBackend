@@ -14,5 +14,6 @@ public class ProductResponseDTO {
     private String categoryName;
     private BigDecimal basePrice;
     private Boolean isAvailable;
+    private String urlImage;
     private String sizes;
 }

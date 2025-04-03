@@ -69,11 +69,13 @@ public class ProductService implements IProductService{
                 .collect(Collectors.joining(", "));
     
             return new ProductResponseDTO(
+                product.getId(),
                 product.getProductCode(),
                 product.getProductName(),
                 product.getCategory().getCategoryName(),
                 product.getBasePrice(),
                 product.getStatus().equals(Status.AVAILABLE),
+                product.getImageUrl(),
                 sizes
             );
         }).collect(Collectors.toList());

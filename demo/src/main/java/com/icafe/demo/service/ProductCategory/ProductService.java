@@ -147,8 +147,6 @@ public class ProductService implements IProductService{
         if(product.getIsDirectSale()) {
             Warehouse warehouse = product.getWarehouse();
             warehouse.setName(request.getProductName());
-            warehouse.setUnit(request.getItem().getUnit());
-            warehouse.setMinQuantity(request.getItem().getMinQuantity());
         }
         
         product.setProductVariants(variants);

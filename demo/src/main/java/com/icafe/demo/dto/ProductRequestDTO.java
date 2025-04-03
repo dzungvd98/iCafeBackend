@@ -17,5 +17,5 @@ public class ProductRequestDTO {
     private Boolean haveType;
     private List<ProductVariantRequestDTO> productVariants;
     private Boolean isDirectSale;
-    private WarehouseRequestDTO item;
+    // private WarehouseRequestDTO item;
 }   

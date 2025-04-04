@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.icafe.demo.service.CategoryService.ICategoryService;
-import com.icafe.demo.service.ProductCategory.IProductService;
+import com.icafe.demo.service.ProductService.IProductService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

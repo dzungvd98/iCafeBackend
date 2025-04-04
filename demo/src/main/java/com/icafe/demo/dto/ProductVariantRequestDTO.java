@@ -10,5 +10,5 @@ import lombok.Data;
 @Builder
 public class ProductVariantRequestDTO {
     private String size;
-    private BigDecimal addPrice;
+    private BigDecimal price;
 }

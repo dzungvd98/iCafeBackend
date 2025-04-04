@@ -52,7 +52,7 @@ public class OrderService implements IOrderService{
                 .orElseThrow(() -> new EntityNotFoundException("Not found product variant!"));
             
             Product product = variant.getProduct();
-            BigDecimal price = product.getBasePrice().add(variant.getAddPrice());
+            BigDecimal price = product.getBasePrice().add(variant.getPrice());
             
             orderProduct.setPriceEach(price);
             orderProduct.setIsCancel(false);
@@ -100,7 +100,7 @@ public class OrderService implements IOrderService{
                 .orElseThrow(() -> new EntityNotFoundException("Product variant id " + orderProductRequest.getProductVariantId() + " not found!"));
 
             Product product = variant.getProduct();
-            BigDecimal price = product.getBasePrice().add(variant.getAddPrice());
+            BigDecimal price = product.getBasePrice().add(variant.getPrice());
 
             orderProduct.setIsCancel(orderProduct.getIsCancel() != null ? orderProduct.getIsCancel() : false);
             orderProduct.setPriceEach(price);

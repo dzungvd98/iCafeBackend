@@ -1,4 +1,4 @@
-package com.icafe.demo.service.ProductCategory;
+package com.icafe.demo.service.ProductService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +67,10 @@ public class ProductService implements IProductService{
             String sizes = product.getProductVariants().stream()
                 .map(variant -> variant.getSize().getSizeName()) 
                 .collect(Collectors.joining(", "));
+
+            String priceStr = product.getProductVariants().stream()
+                .map(variant -> String.valueOf(variant.getPrice().intValue()))
+                .collect(Collectors.joining(", "));
     
             return new ProductResponseDTO(
                 product.getId(),
@@ -74,6 +78,7 @@ public class ProductService implements IProductService{
                 product.getProductName(),
                 product.getCategory().getCategoryName(),
                 product.getBasePrice(),
+                priceStr,
                 product.getStatus().equals(Status.AVAILABLE),
                 product.getImageUrl(),
                 sizes
@@ -99,6 +104,7 @@ public class ProductService implements IProductService{
             Size size = sizeRepository.findBySizeName(variantRequest.getSize())
                 .orElseGet(() -> sizeRepository.save(new Size(variantRequest.getSize())));
             variant.setSize(size);
+            variant.setPrice(variantRequest.getPrice());
             variants.add(variant);
         }
         
@@ -117,7 +123,7 @@ public class ProductService implements IProductService{
 
 
         product.setProductVariants(variants);
-        return productRepository.save(product);
+        return productRepository.save(product) ;
     }
 
     @Transactional
@@ -205,7 +211,7 @@ public class ProductService implements IProductService{
         List<ProductVariantResponseDTO> variants = product.getProductVariants().stream()
             .map(vari -> new ProductVariantResponseDTO(
                 vari.getSize().getSizeName(),
-                vari.getAddPrice()
+                vari.getPrice()
             )).collect(Collectors.toList());
 
         response.setVariants(variants);

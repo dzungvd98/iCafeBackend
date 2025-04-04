@@ -77,7 +77,7 @@ public class AuthController {
             UserPrincipal userPrincipal = userService.findByUsername(user.getUsername());
 
             if(userPrincipal == null || !new BCryptPasswordEncoder().matches(user.getPassword(), userPrincipal.getPassword())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or password is incorrect!");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username or password is incorrect!");
             }
             if(userPrincipal.isDeleted()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Account has been disabled!");

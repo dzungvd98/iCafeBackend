@@ -1,4 +1,4 @@
-package com.icafe.demo.service.ProductCategory;
+package com.icafe.demo.service.ProductService;
 
 import java.util.List;
 

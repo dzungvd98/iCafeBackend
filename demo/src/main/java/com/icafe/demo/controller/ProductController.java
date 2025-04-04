@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.icafe.demo.dto.ProductIngredientRequestDTO;
 import com.icafe.demo.dto.ProductRequestDTO;
 import com.icafe.demo.enums.Status;
-import com.icafe.demo.service.ProductCategory.IProductService;
 import com.icafe.demo.service.ProductIngredientService.IProductIngredientService;
+import com.icafe.demo.service.ProductService.IProductService;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

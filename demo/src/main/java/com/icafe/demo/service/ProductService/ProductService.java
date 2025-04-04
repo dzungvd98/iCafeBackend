@@ -6,19 +6,20 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.icafe.demo.dto.PagingDataDTO;
 import com.icafe.demo.dto.ProductDetailResponseDTO;
 import com.icafe.demo.dto.ProductRequestDTO;
 import com.icafe.demo.dto.ProductResponseDTO;
 import com.icafe.demo.dto.ProductVariantRequestDTO;
 import com.icafe.demo.dto.ProductVariantResponseDTO;
 import com.icafe.demo.enums.Status;
+import com.icafe.demo.mapper.PagingMapper;
 import com.icafe.demo.mapper.ProductMapper;
 import com.icafe.demo.mapper.ProductVariantMapper;
 import com.icafe.demo.models.Category;
@@ -36,7 +37,7 @@ import com.icafe.demo.specification.ProductSpecification;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class ProductService implements IProductService{
+public class ProductService implements IProductService {
     @Autowired
     private IProductRepository productRepository;
 
@@ -59,33 +60,31 @@ public class ProductService implements IProductService{
     private ProductVariantMapper productVariantMapper;
 
     @Override
-    public Page<ProductResponseDTO> getProducts(String keyword, int page, int size) {
+    public PagingDataDTO<ProductResponseDTO> getProducts(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Specification<Product> spec = Specification.where(ProductSpecification.hasSearchKeyword(keyword));
         Page<Product> productPage = productRepository.findAll(spec, pageable);
-        List<ProductResponseDTO> productResponseDTOs = productPage.getContent().stream().map(product -> {
+        return PagingMapper.map(productPage, product -> {
             String sizes = product.getProductVariants().stream()
-                .map(variant -> variant.getSize().getSizeName()) 
-                .collect(Collectors.joining(", "));
+                    .map(variant -> variant.getSize().getSizeName())
+                    .collect(Collectors.joining(", "));
 
             String priceStr = product.getProductVariants().stream()
-                .map(variant -> String.valueOf(variant.getPrice().intValue()))
-                .collect(Collectors.joining(", "));
-    
+                    .map(variant -> String.valueOf(variant.getPrice().intValue()))
+                    .collect(Collectors.joining(", "));
+
             return new ProductResponseDTO(
-                product.getId(),
-                product.getProductCode(),
-                product.getProductName(),
-                product.getCategory().getCategoryName(),
-                product.getBasePrice(),
-                priceStr,
-                product.getStatus().equals(Status.AVAILABLE),
-                product.getImageUrl(),
-                sizes
-            );
-        }).collect(Collectors.toList());
-        
-        return new PageImpl<>(productResponseDTOs, pageable, productPage.getTotalElements());
+                    product.getId(),
+                    product.getProductCode(),
+                    product.getProductName(),
+                    product.getCategory().getCategoryName(),
+                    product.getBasePrice(),
+                    priceStr,
+                    product.getStatus().equals(Status.AVAILABLE),
+                    product.getImageUrl(),
+                    sizes);
+        });
+
     }
 
     public List<Product> getListProductByCategory(int categoryId) {
@@ -99,16 +98,16 @@ public class ProductService implements IProductService{
         Product product = productMapper.toEntity(request, category);
 
         List<ProductVariant> variants = new ArrayList<>();
-        for(ProductVariantRequestDTO variantRequest : request.getProductVariants()) {
+        for (ProductVariantRequestDTO variantRequest : request.getProductVariants()) {
             ProductVariant variant = productVariantMapper.toEntity(variantRequest, product);
             Size size = sizeRepository.findBySizeName(variantRequest.getSize())
-                .orElseGet(() -> sizeRepository.save(new Size(variantRequest.getSize())));
+                    .orElseGet(() -> sizeRepository.save(new Size(variantRequest.getSize())));
             variant.setSize(size);
             variant.setPrice(variantRequest.getPrice());
             variants.add(variant);
         }
-        
-        if(request.getIsDirectSale()) {
+
+        if (request.getIsDirectSale()) {
             Warehouse warehouse = new Warehouse();
             warehouse.setName(product.getProductName());
             warehouse.setIsDirectSale(true);
@@ -121,19 +120,18 @@ public class ProductService implements IProductService{
             product.setIsDirectSale(true);
         }
 
-
         product.setProductVariants(variants);
-        return productRepository.save(product) ;
+        return productRepository.save(product);
     }
 
     @Transactional
     public Product updateProduct(int productId, ProductRequestDTO request) {
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
-        
+                .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
+
         Category category = categoryRepository.findById(request.getCategoryId())
-            .orElseThrow(() -> new EntityNotFoundException("Category not found"));
-    
+                .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+
         product.setProductCode(request.getProductCode());
         product.setCategory(category);
         product.setBasePrice(request.getBasePrice());
@@ -144,19 +142,19 @@ public class ProductService implements IProductService{
         productVariantRepository.deleteByProductId(productId);
 
         List<ProductVariant> variants = new ArrayList<>();
-        for(ProductVariantRequestDTO variantRequest : request.getProductVariants()) {
+        for (ProductVariantRequestDTO variantRequest : request.getProductVariants()) {
             ProductVariant variant = productVariantMapper.toEntity(variantRequest, product);
             Size size = sizeRepository.findBySizeName(variantRequest.getSize())
-                .orElseGet(() -> sizeRepository.save(new Size(variantRequest.getSize())));
+                    .orElseGet(() -> sizeRepository.save(new Size(variantRequest.getSize())));
             variant.setSize(size);
             variants.add(variant);
         }
 
-        if(product.getIsDirectSale()) {
+        if (product.getIsDirectSale()) {
             Warehouse warehouse = product.getWarehouse();
             warehouse.setName(request.getProductName());
         }
-        
+
         product.setProductVariants(variants);
         return productRepository.save(product);
     }
@@ -164,19 +162,17 @@ public class ProductService implements IProductService{
     @Override
     public void deleteProductById(int productId) {
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
-        
+                .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
+
         product.setDeleted(true);
         productRepository.save(product);
     }
 
-    
-
     @Override
     public void recoverDeletedProduct(int productId) {
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
-        
+                .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
+
         product.setDeleted(false);
         productRepository.save(product);
     }
@@ -184,7 +180,7 @@ public class ProductService implements IProductService{
     @Override
     public void changeProductStatus(int productId, Status status) {
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
+                .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
         product.setStatus(status);
         productRepository.save(product);
     }
@@ -192,27 +188,27 @@ public class ProductService implements IProductService{
     @Override
     public ProductDetailResponseDTO getProductDetail(int productId) {
         Product product = productRepository.findById(productId)
-            .orElseThrow(() -> new EntityNotFoundException("Not found product with id " + productId));
-        if(product.isDeleted()) {
+                .orElseThrow(() -> new EntityNotFoundException("Not found product with id " + productId));
+        if (product.isDeleted()) {
             throw new IllegalArgumentException("Can't get detail of deleted product!");
         }
         ProductDetailResponseDTO response = ProductDetailResponseDTO.builder()
-                        .basePrice(product.getBasePrice())
-                        .categoryId(product.getCategory().getId())
-                        .categoryName(product.getCategory().getCategoryName())
-                        .haveType(product.getHaveType())
-                        .isDirectSale(product.getIsDirectSale())
-                        .isAvailable(product.getStatus().equals(Status.AVAILABLE) ? true : false)
-                        .urlImage(product.getImageUrl())
-                        .productCode(product.getProductCode())
-                        .productName(product.getProductName())
-                        .productId(product.getId())
-                        .build();
+                .basePrice(product.getBasePrice())
+                .categoryId(product.getCategory().getId())
+                .categoryName(product.getCategory().getCategoryName())
+                .haveType(product.getHaveType())
+                .isDirectSale(product.getIsDirectSale())
+                .isAvailable(product.getStatus().equals(Status.AVAILABLE) ? true : false)
+                .urlImage(product.getImageUrl())
+                .productCode(product.getProductCode())
+                .productName(product.getProductName())
+                .productId(product.getId())
+                .build();
         List<ProductVariantResponseDTO> variants = product.getProductVariants().stream()
-            .map(vari -> new ProductVariantResponseDTO(
-                vari.getSize().getSizeName(),
-                vari.getPrice()
-            )).collect(Collectors.toList());
+                .map(vari -> new ProductVariantResponseDTO(
+                        vari.getSize().getSizeName(),
+                        vari.getPrice()))
+                .collect(Collectors.toList());
 
         response.setVariants(variants);
         return response;

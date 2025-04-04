@@ -2,8 +2,7 @@ package com.icafe.demo.service.ProductService;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-
+import com.icafe.demo.dto.PagingDataDTO;
 import com.icafe.demo.dto.ProductDetailResponseDTO;
 import com.icafe.demo.dto.ProductRequestDTO;
 import com.icafe.demo.dto.ProductResponseDTO;
@@ -12,7 +11,7 @@ import com.icafe.demo.models.Product;
 
 public interface IProductService {
     List<Product> getListProductByCategory(int categoryId);
-    Page<ProductResponseDTO> getProducts(String keyword, int page, int size);
+    PagingDataDTO<ProductResponseDTO> getProducts(String keyword, int page, int size);
     Product createNewProduct(ProductRequestDTO request);
     Product updateProduct(int productId, ProductRequestDTO request);
     ProductDetailResponseDTO getProductDetail(int productId);

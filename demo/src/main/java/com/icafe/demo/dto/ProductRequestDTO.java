@@ -11,7 +11,6 @@ import lombok.Data;
 public class ProductRequestDTO {
     private String productCode;
     private String productName;
-    private String imageUrl;
     private BigDecimal basePrice;
     private Integer categoryId;
     private Boolean haveType;

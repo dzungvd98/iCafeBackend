@@ -1,7 +1,13 @@
 package com.icafe.demo.service.ProductService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.icafe.demo.dto.PagingDataDTO;
 import com.icafe.demo.dto.ProductDetailResponseDTO;
@@ -38,6 +45,8 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ProductService implements IProductService {
+    private static final String UPLOAD_DIR = "src/main/resources/static/images/";
+
     @Autowired
     private IProductRepository productRepository;
 
@@ -92,7 +101,7 @@ public class ProductService implements IProductService {
     }
 
     @Transactional
-    public Product createNewProduct(ProductRequestDTO request) {
+    public Product createNewProduct(ProductRequestDTO request, MultipartFile image) throws IOException{
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found!"));
         Product product = productMapper.toEntity(request, category);
@@ -120,6 +129,23 @@ public class ProductService implements IProductService {
             product.setIsDirectSale(true);
         }
 
+        if (image != null && !image.isEmpty()) {
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+    
+            // Đảm bảo thư mục tồn tại
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+    
+            // Copy file an toàn
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+    
+            // Set URL
+            product.setImageUrl("/images/" + fileName);
+        }
+
         product.setProductVariants(variants);
         return productRepository.save(product);
     }
@@ -136,7 +162,6 @@ public class ProductService implements IProductService {
         product.setCategory(category);
         product.setBasePrice(request.getBasePrice());
         product.setHaveType(request.getHaveType());
-        product.setImageUrl(request.getImageUrl());
         product.setProductName(request.getProductName());
 
         productVariantRepository.deleteByProductId(productId);

@@ -1,10 +1,12 @@
 package com.icafe.demo.controller;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.icafe.demo.dto.ProductIngredientRequestDTO;
 import com.icafe.demo.dto.ProductRequestDTO;
 import com.icafe.demo.enums.Status;
+import com.icafe.demo.mapper.ProductMapper;
 import com.icafe.demo.service.ProductIngredientService.IProductIngredientService;
 import com.icafe.demo.service.ProductService.IProductService;
 
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +43,9 @@ public class ProductController {
     @Autowired
     private IProductIngredientService productIngredientService;
 
+    @Autowired
+    private ProductMapper productMapper;
+
     @GetMapping
     public ResponseEntity<?> getProducts(@RequestParam(defaultValue = "") String keyword,
                                         @RequestParam(defaultValue = "0") @Min(0) int page, 
@@ -54,10 +60,12 @@ public class ProductController {
     
 
     @PostMapping
-    public ResponseEntity<?> createNewProduct(@RequestBody ProductRequestDTO request) {
+    public ResponseEntity<?> createNewProduct(
+                        @RequestPart("data") String productData,
+                        @RequestPart("image") MultipartFile image) {
         try {
-            
-            return ResponseEntity.ok(productService.createNewProduct(request));
+            ProductRequestDTO dto = productMapper.mapToProductRequestDTO(productData);
+            return ResponseEntity.ok(productService.createNewProduct(dto, image));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");

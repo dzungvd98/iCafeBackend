@@ -72,13 +72,17 @@ public class ProductController {
         }
     }
 
-    @PutMapping("{productId}/")
-    public ResponseEntity<?> updateProduct(@PathVariable int productId, @RequestBody ProductRequestDTO request) {
+    @PutMapping("/{productId}/update")
+    public ResponseEntity<?> updateProduct(
+                                        @PathVariable int productId, 
+                                        @RequestPart("data") String productData,
+                                        @RequestPart("image") MultipartFile image) {
         try {
-            return ResponseEntity.ok(productService.updateProduct(productId, request));
+            ProductRequestDTO dto = productMapper.mapToProductRequestDTO(productData);
+            return ResponseEntity.ok(productService.updateProduct(productId, dto, image));
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
     

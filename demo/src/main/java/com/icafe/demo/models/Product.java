@@ -70,7 +70,7 @@ public class Product extends BaseEntity{
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonManagedReference
     List<ProductVariant> productVariants;
 

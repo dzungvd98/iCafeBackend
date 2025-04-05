@@ -45,7 +45,7 @@ import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ProductService implements IProductService {
-    private static final String UPLOAD_DIR = "src/main/resources/static/images/";
+    private static final String UPLOAD_DIR = "demo/src/main/resources/static/images/";
 
     @Autowired
     private IProductRepository productRepository;
@@ -151,36 +151,47 @@ public class ProductService implements IProductService {
     }
 
     @Transactional
-    public Product updateProduct(int productId, ProductRequestDTO request) {
+    public Product updateProduct(int productId, ProductRequestDTO request, MultipartFile image) throws IOException {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found!"));
 
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found"));
 
+        productVariantRepository.deleteByProduct_ProductCode(product.getProductCode());
         product.setProductCode(request.getProductCode());
         product.setCategory(category);
         product.setBasePrice(request.getBasePrice());
         product.setHaveType(request.getHaveType());
         product.setProductName(request.getProductName());
 
-        productVariantRepository.deleteByProductId(productId);
-
-        List<ProductVariant> variants = new ArrayList<>();
+        product.getProductVariants().clear();
         for (ProductVariantRequestDTO variantRequest : request.getProductVariants()) {
             ProductVariant variant = productVariantMapper.toEntity(variantRequest, product);
             Size size = sizeRepository.findBySizeName(variantRequest.getSize())
                     .orElseGet(() -> sizeRepository.save(new Size(variantRequest.getSize())));
             variant.setSize(size);
-            variants.add(variant);
+            variant.setPrice(variantRequest.getPrice());
+            variant.setProduct(product);
+            product.getProductVariants().add(variant);
         }
+        // Xử lý cập nhật ảnh nếu có
+        if (image != null && !image.isEmpty()) {
+            String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
 
-        if (product.getIsDirectSale()) {
-            Warehouse warehouse = product.getWarehouse();
-            warehouse.setName(request.getProductName());
+            // Đảm bảo thư mục tồn tại
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            // Copy file an toàn
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(image.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Set URL mới cho ảnh
+            product.setImageUrl("/images/" + fileName);
         }
-
-        product.setProductVariants(variants);
         return productRepository.save(product);
     }
 

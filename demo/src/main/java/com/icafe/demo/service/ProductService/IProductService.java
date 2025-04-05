@@ -16,7 +16,7 @@ public interface IProductService {
     List<Product> getListProductByCategory(int categoryId);
     PagingDataDTO<ProductResponseDTO> getProducts(String keyword, int page, int size);
     Product createNewProduct(ProductRequestDTO request, MultipartFile image) throws IOException;
-    Product updateProduct(int productId, ProductRequestDTO request);
+    Product updateProduct(int productId, ProductRequestDTO request, MultipartFile image) throws IOException ;
     ProductDetailResponseDTO getProductDetail(int productId);
 
     void deleteProductById(int productId);

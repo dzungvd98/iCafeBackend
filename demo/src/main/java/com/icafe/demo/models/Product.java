@@ -40,9 +40,6 @@ public class Product extends BaseEntity{
     @Column(name = "product_id")
     private Integer id;
 
-    @Column(name = "product_code", nullable = false, length = 50, unique = true)
-    private String productCode;
-
     @Column(name = "product_name", nullable = false, length = 200)
     private String productName;
 

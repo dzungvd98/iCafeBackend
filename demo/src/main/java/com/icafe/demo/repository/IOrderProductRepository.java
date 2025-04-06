@@ -15,11 +15,11 @@ import com.icafe.demo.models.OrderProduct;
 @Repository
 public interface IOrderProductRepository extends JpaRepository<OrderProduct, Integer>{
     
-    @Query("SELECT new com.icafe.demo.dto.TopSellingProductResponseDTO(op.product.productCode, op.product.productName, SUM(op.quantity), SUM(op.quantity * op.priceEach)) " +
+    @Query("SELECT new com.icafe.demo.dto.TopSellingProductResponseDTO(op.product.id, op.product.productName, SUM(op.quantity), SUM(op.quantity * op.priceEach)) " +
     "FROM OrderProduct op " +
     "WHERE op.order.createdAt BETWEEN :startDate AND :endDate " +
     "AND op.isCancel = false " +
-    "GROUP BY op.product.productCode, op.product.productName " +
+    "GROUP BY op.product.id, op.product.productName " +
     "ORDER BY " + 
     "CASE WHEN :sortBy = 'REVENUE' THEN SUM(op.quantity * op.priceEach) " +
     "WHEN :sortBy = 'QUANTITY' THEN SUM(op.quantity) END DESC")

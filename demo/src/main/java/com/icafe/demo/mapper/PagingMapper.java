@@ -10,7 +10,7 @@ public class PagingMapper {
      public static <T, D> PagingDataDTO<D> map(Page<T> page, Function<T, D> converter) {
         PagingDataDTO<D> dto = new PagingDataDTO<>();
         dto.setContents(page.getContent().stream().map(converter).toList());
-        dto.setPageNumber(page.getNumber());
+        dto.setPageNumber(page.getNumber() + 1);
         dto.setPageSize(page.getSize());
         dto.setTotalPages(page.getTotalPages());
         dto.setTotalElements((int) page.getTotalElements());

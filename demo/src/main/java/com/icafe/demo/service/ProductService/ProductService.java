@@ -36,7 +36,6 @@ import com.icafe.demo.models.Size;
 import com.icafe.demo.models.Warehouse;
 import com.icafe.demo.repository.ICategoryRepository;
 import com.icafe.demo.repository.IProductRepository;
-import com.icafe.demo.repository.IProductVariantRepository;
 import com.icafe.demo.repository.ISizeRepository;
 import com.icafe.demo.repository.IWarehouseRepository;
 import com.icafe.demo.specification.ProductSpecification;
@@ -53,8 +52,6 @@ public class ProductService implements IProductService {
     @Autowired
     private ICategoryRepository categoryRepository;
 
-    @Autowired
-    private IProductVariantRepository productVariantRepository;
 
     @Autowired
     private ISizeRepository sizeRepository;
@@ -70,7 +67,7 @@ public class ProductService implements IProductService {
 
     @Override
     public PagingDataDTO<ProductResponseDTO> getProducts(String keyword, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
         Specification<Product> spec = Specification.where(ProductSpecification.hasSearchKeyword(keyword));
         Page<Product> productPage = productRepository.findAll(spec, pageable);
         return PagingMapper.map(productPage, product -> {
@@ -84,7 +81,6 @@ public class ProductService implements IProductService {
 
             return new ProductResponseDTO(
                     product.getId(),
-                    product.getProductCode(),
                     product.getProductName(),
                     product.getCategory().getCategoryName(),
                     product.getBasePrice(),
@@ -158,8 +154,6 @@ public class ProductService implements IProductService {
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found"));
 
-        productVariantRepository.deleteByProduct_ProductCode(product.getProductCode());
-        product.setProductCode(request.getProductCode());
         product.setCategory(category);
         product.setBasePrice(request.getBasePrice());
         product.setHaveType(request.getHaveType());
@@ -236,7 +230,6 @@ public class ProductService implements IProductService {
                 .isDirectSale(product.getIsDirectSale())
                 .isAvailable(product.getStatus().equals(Status.AVAILABLE) ? true : false)
                 .urlImage(product.getImageUrl())
-                .productCode(product.getProductCode())
                 .productName(product.getProductName())
                 .productId(product.getId())
                 .build();

@@ -9,7 +9,6 @@ import lombok.Data;
 @Data
 @Builder
 public class ProductRequestDTO {
-    private String productCode;
     private String productName;
     private BigDecimal basePrice;
     private Integer categoryId;

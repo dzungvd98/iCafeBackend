@@ -10,7 +10,6 @@ import lombok.Data;
 @Builder
 public class ProductDetailResponseDTO {
     private Integer productId;
-    private String productCode;
     private String productName;
     private Boolean haveType;
     private String urlImage;

@@ -9,7 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class ProductResponseDTO {
     private Integer productId;
-    private String productCode;
     private String productName;
     private String categoryName;
     private BigDecimal basePrice;

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.icafe.demo.service.CategoryService.ICategoryService;
@@ -75,9 +76,12 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}/products")
-    public ResponseEntity<?> getListProductByCategory(@PathVariable int categoryId) {
+    public ResponseEntity<?> getListProductByCategory(
+                                        @PathVariable int categoryId,
+                                        @RequestParam(defaultValue = "1") int page,
+                                        @RequestParam(defaultValue = "10") int size) {
         try {
-            return ResponseEntity.ok(productService.getListProductByCategory(categoryId));
+            return ResponseEntity.ok(productService.getListProductByCategory(categoryId, page, size));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");

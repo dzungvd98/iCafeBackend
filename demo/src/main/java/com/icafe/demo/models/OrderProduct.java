@@ -48,6 +48,12 @@ public class OrderProduct {
 
     private String size;
 
+    @Column(name = "percent_ice")
+    private String percentIce;
+
+    @Column(name = "percent_sugar")
+    private String percentSugar;
+
     @Column(nullable = false)
     private Integer quantity;
 

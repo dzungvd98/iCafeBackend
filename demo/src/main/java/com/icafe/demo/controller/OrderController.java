@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 
@@ -29,6 +31,27 @@ public class OrderController {
 
     @Autowired
     private IOrderProductService orderProductService;
+
+    @GetMapping
+    public ResponseEntity<?> getOrders() {
+        try {
+            return ResponseEntity.ok(orderService.getOrders()) ;
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
+    @GetMapping("/{orderCode}/")
+    public ResponseEntity<?>  getDetailOrderByCode(@PathVariable String orderCode) {
+        try {
+            return ResponseEntity.ok(orderService.getOrderByOrderCode(orderCode)) ;
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
 
     @PostMapping
     public ResponseEntity<?> createNewOrder(@RequestBody OrderRequestDTO orderRequest) {

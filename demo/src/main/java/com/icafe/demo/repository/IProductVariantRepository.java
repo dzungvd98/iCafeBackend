@@ -7,4 +7,5 @@ import com.icafe.demo.models.ProductVariant;
 
 @Repository
 public interface IProductVariantRepository extends JpaRepository<ProductVariant, Integer>{
+    ProductVariant findByProductIdAndSizeSizeName(int productId, String sizeName);
 }

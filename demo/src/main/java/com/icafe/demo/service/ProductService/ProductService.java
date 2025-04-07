@@ -92,8 +92,28 @@ public class ProductService implements IProductService {
 
     }
 
-    public List<Product> getListProductByCategory(int categoryId) {
-        return productRepository.findByCategoryIdAndStatusAndDeleted(categoryId, Status.AVAILABLE, false);
+    public PagingDataDTO<ProductResponseDTO> getListProductByCategory(int categoryId, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<Product> productPage = productRepository.findByCategoryIdAndStatusAndDeleted(categoryId, Status.AVAILABLE, false, pageable);
+        return PagingMapper.map(productPage, product -> {
+            String sizes = product.getProductVariants().stream()
+                    .map(variant -> variant.getSize().getSizeName())
+                    .collect(Collectors.joining(", "));
+
+            String priceStr = product.getProductVariants().stream()
+                    .map(variant -> String.valueOf(variant.getPrice().intValue()))
+                    .collect(Collectors.joining(", "));
+
+            return new ProductResponseDTO(
+                    product.getId(),
+                    product.getProductName(),
+                    product.getCategory().getCategoryName(),
+                    product.getBasePrice(),
+                    priceStr,
+                    product.getStatus().equals(Status.AVAILABLE),
+                    product.getImageUrl(),
+                    sizes);
+        });
     }
 
     @Transactional

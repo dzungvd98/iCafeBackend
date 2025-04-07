@@ -1,6 +1,8 @@
 package com.icafe.demo.controller;
 
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +37,7 @@ public class CategoryController {
     @GetMapping("/")
     public ResponseEntity<?> getAllCategory() {
         try {
-            return ResponseEntity.ok(categoryService.getAllCategory());
+            return ResponseEntity.ok(Map.of("data", categoryService.getAllCategory()));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");

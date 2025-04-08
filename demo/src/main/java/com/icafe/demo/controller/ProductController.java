@@ -120,7 +120,7 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}/ingredients")
-    public ResponseEntity<?> getIngrediensOfProduct(int productId) {
+    public ResponseEntity<?> getIngrediensOfProduct(@PathVariable int productId) {
         try {
             return ResponseEntity.ok(productIngredientService.getAllIngredientsOfProduct(productId));
         } catch (Exception e) {
@@ -130,7 +130,7 @@ public class ProductController {
     }
     
     @PostMapping("/{productId}/ingredients")
-    public ResponseEntity<?> createProductIngredients(int productId,@RequestBody List<ProductIngredientRequestDTO> ingredients) {
+    public ResponseEntity<?> createProductIngredients(@PathVariable int productId,@RequestBody List<ProductIngredientRequestDTO> ingredients) {
         try {
             return ResponseEntity.ok(productIngredientService.createNewProductIngredients(productId, ingredients));
         } catch (Exception e) {
@@ -140,7 +140,7 @@ public class ProductController {
     }
     
     @PutMapping("/{productId}/ingredients")
-    public ResponseEntity<?> updateProductIngredients(int productId,@RequestBody List<ProductIngredientRequestDTO> ingredients) {
+    public ResponseEntity<?> updateProductIngredients(@PathVariable int productId,@RequestBody List<ProductIngredientRequestDTO> ingredients) {
         try {
             return ResponseEntity.ok(productIngredientService.updateProductIngredients(productId, ingredients));
         } catch (Exception e) {
@@ -150,7 +150,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productId}/ingredients")
-    public ResponseEntity<?> updateProductIngredients(int productId) {
+    public ResponseEntity<?> updateProductIngredients(@PathVariable int productId) {
         try {
             productIngredientService.deleteProductIngredientsOfProductId(productId);
             return ResponseEntity.ok("Recipe is deleted!");
@@ -160,8 +160,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{productId}/detail")
-    public ResponseEntity<?> getProductDetail(int productId) {
+    @GetMapping("/{productId}/details")
+    public ResponseEntity<?> getProductDetail(@PathVariable int productId) {
         try {
             return ResponseEntity.ok(productService.getProductDetail(productId));
         } catch (Exception e) {

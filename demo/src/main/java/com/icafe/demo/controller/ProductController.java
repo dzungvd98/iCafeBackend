@@ -48,10 +48,11 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<?> getProducts(@RequestParam(defaultValue = "") String keyword,
+                                        @RequestParam(defaultValue = "1") int categoryId,
                                         @RequestParam(defaultValue = "1") @Min(1) int page, 
                                         @RequestParam(defaultValue = "10") @Min(1) @Max(20) int size) {
         try {
-            return ResponseEntity.ok(productService.getProducts(keyword, page, size));
+            return ResponseEntity.ok(productService.getProducts(keyword, categoryId , page, size));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
@@ -68,7 +69,7 @@ public class ProductController {
             return ResponseEntity.ok(productService.createNewProduct(dto, image));
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

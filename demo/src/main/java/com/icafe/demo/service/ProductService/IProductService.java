@@ -13,7 +13,7 @@ import com.icafe.demo.models.Product;
 
 public interface IProductService {
     PagingDataDTO<ProductResponseDTO> getListProductByCategory(int categoryId, int page, int size);
-    PagingDataDTO<ProductResponseDTO> getProducts(String keyword, int page, int size);
+    PagingDataDTO<ProductResponseDTO> getProducts(String keyword, int categoryId, int page, int size);
     Product createNewProduct(ProductRequestDTO request, MultipartFile image) throws IOException;
     Product updateProduct(int productId, ProductRequestDTO request, MultipartFile image) throws IOException ;
     ProductDetailResponseDTO getProductDetail(int productId);

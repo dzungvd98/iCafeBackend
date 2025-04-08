@@ -23,7 +23,10 @@ public class ProductMapper {
         Product product = modelMapper.map(dto, Product.class);
         product.setId(null);
         product.setCategory(category);
-        product.setStatus(Status.AVAILABLE); // Gán status mặc định
+        product.setStatus(Status.AVAILABLE); 
+        if(dto.isAvailable() == false)  {
+            product.setStatus(Status.OUT_OF_STOCK); 
+        } 
         return product;
     }
 

@@ -40,11 +40,12 @@ import com.icafe.demo.repository.ISizeRepository;
 import com.icafe.demo.repository.IWarehouseRepository;
 import com.icafe.demo.specification.ProductSpecification;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ProductService implements IProductService {
-    private static final String UPLOAD_DIR = "demo/src/main/resources/static/images/";
+    private static final String UPLOAD_DIR = "upload/images/";
 
     @Autowired
     private IProductRepository productRepository;
@@ -66,9 +67,11 @@ public class ProductService implements IProductService {
     private ProductVariantMapper productVariantMapper;
 
     @Override
-    public PagingDataDTO<ProductResponseDTO> getProducts(String keyword, int page, int size) {
+    public PagingDataDTO<ProductResponseDTO> getProducts(String keyword, int categoryId, int page, int size) {
+        categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found!"));
         Pageable pageable = PageRequest.of(page - 1, size);
-        Specification<Product> spec = Specification.where(ProductSpecification.hasSearchKeyword(keyword));
+        Specification<Product> spec = Specification.where(ProductSpecification.hasSearchKeyword(keyword, categoryId));
         Page<Product> productPage = productRepository.findAll(spec, pageable);
         return PagingMapper.map(productPage, product -> {
             String sizes = product.getProductVariants().stream()
@@ -120,8 +123,10 @@ public class ProductService implements IProductService {
     public Product createNewProduct(ProductRequestDTO request, MultipartFile image) throws IOException{
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not found!"));
+        productRepository.findByProductName(request.getProductName())
+                .ifPresent(p -> {throw new EntityExistsException("Product name existed!");});
         Product product = productMapper.toEntity(request, category);
-
+        
         List<ProductVariant> variants = new ArrayList<>();
         for (ProductVariantRequestDTO variantRequest : request.getProductVariants()) {
             ProductVariant variant = productVariantMapper.toEntity(variantRequest, product);

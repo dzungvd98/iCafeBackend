@@ -7,12 +7,17 @@ import com.icafe.demo.models.Product;
 import jakarta.persistence.criteria.Predicate;
 
 public class ProductSpecification {
-    public static Specification<Product> hasSearchKeyword(String keyword) {
+    public static Specification<Product> hasSearchKeyword(String keyword, int categoryId) {
         return (root, query, cb) -> {
             Predicate deletedPredicate = cb.isFalse(root.get("deleted"));
+            Predicate categoryPredicate = cb.equal(root.get("category").get("id"), categoryId);
             
+            if (query.getOrderList().isEmpty()) {
+                query.orderBy(cb.desc(root.get("createdAt"))); 
+            }
+
             if (keyword == null || keyword.trim().isEmpty()) {
-                return deletedPredicate;
+                return cb.and(deletedPredicate, categoryPredicate);
             }
 
             String likeSearch = "%" + keyword + "%";
@@ -21,7 +26,7 @@ public class ProductSpecification {
                 cb.like(root.get("productName"), likeSearch)
             );
 
-            return cb.and(deletedPredicate, searchPredicate);
+            return cb.and(deletedPredicate, categoryPredicate, searchPredicate);
         };
     }
 }

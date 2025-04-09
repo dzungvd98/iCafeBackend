@@ -48,7 +48,7 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<?> getProducts(@RequestParam(defaultValue = "") String keyword,
-                                        @RequestParam(defaultValue = "1") int categoryId,
+                                        @RequestParam(defaultValue = "0") int categoryId,
                                         @RequestParam(defaultValue = "1") @Min(1) int page, 
                                         @RequestParam(defaultValue = "10") @Min(1) @Max(20) int size) {
         try {

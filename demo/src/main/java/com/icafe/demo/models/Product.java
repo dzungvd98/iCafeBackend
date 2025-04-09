@@ -54,7 +54,7 @@ public class Product extends BaseEntity{
     private BigDecimal basePrice;
 
     @Column(name = "have_type", nullable = false)
-    private Boolean haveType;
+    private Integer haveType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

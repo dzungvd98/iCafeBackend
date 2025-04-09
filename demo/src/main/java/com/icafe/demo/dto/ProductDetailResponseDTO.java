@@ -11,7 +11,7 @@ import lombok.Data;
 public class ProductDetailResponseDTO {
     private Integer productId;
     private String productName;
-    private Boolean haveType;
+    private Integer haveType;
     private String urlImage;
     private Integer categoryId;
     private String categoryName;

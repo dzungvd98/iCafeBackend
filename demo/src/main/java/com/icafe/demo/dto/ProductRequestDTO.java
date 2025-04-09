@@ -12,7 +12,7 @@ public class ProductRequestDTO {
     private String productName;
     private BigDecimal basePrice;
     private Integer categoryId;
-    private Boolean haveType;
+    private Integer haveType;
     private List<ProductVariantRequestDTO> productVariants;
     private Boolean isDirectSale;
     @Builder.Default

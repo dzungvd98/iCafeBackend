@@ -81,9 +81,10 @@ public class CategoryController {
     public ResponseEntity<?> getListProductByCategory(
                                         @PathVariable int categoryId,
                                         @RequestParam(defaultValue = "1") int page,
-                                        @RequestParam(defaultValue = "10") int size) {
+                                        @RequestParam(defaultValue = "10") int size,
+                                        @RequestParam(defaultValue = "") String keyword) {
         try {
-            return ResponseEntity.ok(productService.getListProductByCategory(categoryId, page, size));
+            return ResponseEntity.ok(productService.getListProductByCategory(keyword, categoryId, page, size));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");

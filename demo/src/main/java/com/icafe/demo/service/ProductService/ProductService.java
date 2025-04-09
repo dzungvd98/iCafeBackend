@@ -68,8 +68,10 @@ public class ProductService implements IProductService {
 
     @Override
     public PagingDataDTO<ProductResponseDTO> getProducts(String keyword, int categoryId, int page, int size) {
-        categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException("Category not found!"));
+        if(categoryId != 0) {
+                categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new EntityNotFoundException("Category not found!"));
+        } 
         Pageable pageable = PageRequest.of(page - 1, size);
         Specification<Product> spec = Specification.where(ProductSpecification.hasSearchKeyword(keyword, categoryId));
         Page<Product> productPage = productRepository.findAll(spec, pageable);
@@ -95,9 +97,12 @@ public class ProductService implements IProductService {
 
     }
 
-    public PagingDataDTO<ProductResponseDTO> getListProductByCategory(int categoryId, int page, int size) {
+    public PagingDataDTO<ProductResponseDTO> getListProductByCategory(String keyword, int categoryId, int page, int size) {
+        categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new EntityNotFoundException("Category not found!"));
         Pageable pageable = PageRequest.of(page - 1, size);
-        Page<Product> productPage = productRepository.findByCategoryIdAndStatusAndDeleted(categoryId, Status.AVAILABLE, false, pageable);
+        Specification<Product> spec = Specification.where(ProductSpecification.hasSearchKeywordAndCategory(keyword, categoryId));
+        Page<Product> productPage = productRepository.findAll(spec, pageable);
         return PagingMapper.map(productPage, product -> {
             String sizes = product.getProductVariants().stream()
                     .map(variant -> variant.getSize().getSizeName())
@@ -260,6 +265,7 @@ public class ProductService implements IProductService {
                 .build();
         List<ProductVariantResponseDTO> variants = product.getProductVariants().stream()
                 .map(vari -> new ProductVariantResponseDTO(
+                        vari.getId(),
                         vari.getSize().getSizeName(),
                         vari.getPrice()))
                 .collect(Collectors.toList());

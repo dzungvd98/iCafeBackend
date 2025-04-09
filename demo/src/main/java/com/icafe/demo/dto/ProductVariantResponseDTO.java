@@ -6,11 +6,15 @@ import lombok.Data;
 
 @Data
 public class ProductVariantResponseDTO {
+    private Integer variantId;
     private String sizeName;
-    private BigDecimal basePrice;
-
-    public ProductVariantResponseDTO(String sizeName, BigDecimal basePrice) {
+    private BigDecimal price;
+    
+    public ProductVariantResponseDTO(Integer variantId, String sizeName, BigDecimal price) {
+        this.variantId = variantId;
         this.sizeName = sizeName;
-        this.basePrice = basePrice;
+        this.price = price;
     }
+
+    
 }

@@ -9,6 +9,7 @@ import com.icafe.demo.enums.Status;
 import com.icafe.demo.mapper.ProductMapper;
 import com.icafe.demo.service.ProductIngredientService.IProductIngredientService;
 import com.icafe.demo.service.ProductService.IProductService;
+import com.icafe.demo.service.ProductVariantService.IProductVariantService;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -45,6 +46,9 @@ public class ProductController {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private IProductVariantService productVariantService;
 
     @GetMapping
     public ResponseEntity<?> getProducts(@RequestParam(defaultValue = "") String keyword,
@@ -170,5 +174,16 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @GetMapping("/findby")
+    public ResponseEntity<?> findProductByVariantId(@RequestParam int variantId) {
+        try {
+            return ResponseEntity.ok(productVariantService.findProductByVariant(variantId));
+        } catch (Exception e) {
+             System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
     
 }

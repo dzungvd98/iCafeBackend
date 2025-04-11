@@ -14,7 +14,7 @@ public class ProductRequestDTO {
     private Integer categoryId;
     private Integer haveType;
     private List<ProductVariantRequestDTO> productVariants;
-    private Boolean isDirectSale;
+    private boolean isDirectSale;
     @Builder.Default
     private boolean isAvailable = true;
     // private WarehouseRequestDTO item;

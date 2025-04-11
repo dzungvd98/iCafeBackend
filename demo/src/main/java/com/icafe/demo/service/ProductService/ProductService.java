@@ -142,7 +142,7 @@ public class ProductService implements IProductService {
             variants.add(variant);
         }
 
-        if (request.getIsDirectSale()) {
+        if (request.isDirectSale()) {
             Warehouse warehouse = new Warehouse();
             warehouse.setName(product.getProductName());
             warehouse.setIsDirectSale(true);
@@ -188,6 +188,8 @@ public class ProductService implements IProductService {
         product.setBasePrice(request.getBasePrice());
         product.setHaveType(request.getHaveType());
         product.setProductName(request.getProductName());
+        product.setStatus(request.isAvailable() == true ? Status.AVAILABLE : Status.OUT_OF_STOCK);
+        product.setIsDirectSale(request.isDirectSale());
 
         product.getProductVariants().clear();
         for (ProductVariantRequestDTO variantRequest : request.getProductVariants()) {

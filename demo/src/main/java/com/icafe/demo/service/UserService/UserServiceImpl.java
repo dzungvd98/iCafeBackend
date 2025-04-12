@@ -27,6 +27,8 @@ public class UserServiceImpl implements IUserService {
             userPrincipal.setUserId(user.getId());
             userPrincipal.setUsername(user.getUsername());
             userPrincipal.setPassword(user.getPassword());
+            userPrincipal.setRole(user.getRole().getRoleName());
+            userPrincipal.setEmail(user.getEmail());
         }
         return userPrincipal;
     }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class JwtUtil {
@@ -39,7 +40,7 @@ public class JwtUtil {
     }
 
     public Date generateExpirationDate() {
-        return new Date(System.currentTimeMillis() + 86400000);
+        return new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(12));
     }
 
     private JWTClaimsSet getClaimsFromToken(String token) {

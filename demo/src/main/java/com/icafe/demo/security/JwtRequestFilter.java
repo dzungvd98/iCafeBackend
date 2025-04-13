@@ -45,7 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             token = verificationTokenService.findByToken(jwt);
         }
 
-        if (null != user && null != token && token.getTokenExpDate().after(new Date())) {
+        if (null != user && null != token && !token.isDeleted() && token.getTokenExpDate().after(new Date())) {
             GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole());
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(user, null, Collections.singletonList(authority));

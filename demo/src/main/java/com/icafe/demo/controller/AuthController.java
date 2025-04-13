@@ -1,6 +1,7 @@
 package com.icafe.demo.controller;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +31,7 @@ import com.icafe.demo.service.UserService.IUserService;
 
 @RestController
 @RequestMapping("api/v1/users")
+@CrossOrigin
 public class AuthController {
     @Autowired
     private IUserRepository userRepository;
@@ -47,7 +50,6 @@ public class AuthController {
 
     private final String ROLE_STAFF = "STAFF";
 
-    @CrossOrigin
     @PostMapping("/register")
     public ResponseEntity<Object> registerApi(@RequestBody UserDTO user) {
         try {
@@ -70,7 +72,6 @@ public class AuthController {
     }
 
     // API login
-    @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO user) {
         try {
@@ -96,7 +97,6 @@ public class AuthController {
         }
     }
 
-    @CrossOrigin
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody UserChangePasswordDTO userChangePassword) {
         try {
@@ -136,6 +136,13 @@ public class AuthController {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+        String tokenStr = authHeader.substring(7).trim();
+        tokenService.deleteToken(tokenStr);
+        return ResponseEntity.ok("Logged out successfully");
     }
     
     

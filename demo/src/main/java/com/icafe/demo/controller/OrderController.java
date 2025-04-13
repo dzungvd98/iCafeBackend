@@ -12,6 +12,10 @@ import com.icafe.demo.enums.OrderStatus;
 import com.icafe.demo.service.OrderProductService.IOrderProductService;
 import com.icafe.demo.service.OrderService.IOrderService;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/orders/")
+@CrossOrigin
 public class OrderController {
     @Autowired
     private IOrderService orderService;
@@ -33,9 +38,11 @@ public class OrderController {
     private IOrderProductService orderProductService;
 
     @GetMapping
-    public ResponseEntity<?> getOrders() {
+    public ResponseEntity<?> getOrders(@RequestParam(defaultValue = "") String keyword,
+                                    @RequestParam(defaultValue = "1") @Min(1) int page, 
+                                    @RequestParam(defaultValue = "10") @Min(1) @Max(20) int size) {
         try {
-            return ResponseEntity.ok(orderService.getOrders()) ;
+            return ResponseEntity.ok(orderService.getOrders(keyword, page, size)) ;
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -105,5 +112,12 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+
+    @GetMapping("/next-order-code")
+    public String getNextOrderCode() {
+        return orderService.getNextOrderCode();
+    }
+    
     
 }

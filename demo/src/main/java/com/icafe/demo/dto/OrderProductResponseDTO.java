@@ -1,5 +1,7 @@
 package com.icafe.demo.dto;
 
+import java.math.BigDecimal;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +14,6 @@ public class OrderProductResponseDTO {
     private String percentIce;
     private String percentSugar;
     private String productImgUrl;
-    private String quantity;
-    private String priceEach;
+    private Integer quantity;
+    private BigDecimal priceEach;
 }

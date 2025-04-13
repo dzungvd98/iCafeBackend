@@ -1,7 +1,6 @@
 package com.icafe.demo.controller;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

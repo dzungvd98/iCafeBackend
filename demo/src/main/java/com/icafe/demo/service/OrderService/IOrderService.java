@@ -12,10 +12,11 @@ import com.icafe.demo.models.Order;
 
 public interface IOrderService {
 
-    PagingDataDTO<OrderResponseDTO> getOrders();
+    PagingDataDTO<OrderResponseDTO> getOrders(String keyword, int page, int size);
     List<OrderProductResponseDTO> getOrderByOrderCode(String orderCode);
     Order createNewOrder(OrderRequestDTO orderRequest);
     Order updateOrder(String orderCode, OrderRequestDTO orderRequestDTO);
     void deleteOrder(String orderCode);
     void changeOrderStatus(String orderCode, OrderStatus status);
+    String getNextOrderCode();
 }

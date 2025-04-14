@@ -1,7 +1,5 @@
 package com.icafe.demo.controller;
 
-import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +16,7 @@ import com.icafe.demo.dto.UserChangePasswordDTO;
 import com.icafe.demo.dto.UserDTO;
 import com.icafe.demo.dto.UserNewPasswordDTO;
 import com.icafe.demo.entity.Token;
-import com.icafe.demo.models.Role;
 import com.icafe.demo.models.User;
-import com.icafe.demo.repository.IRoleRepository;
 import com.icafe.demo.repository.IUserRepository;
 import com.icafe.demo.security.JwtUtil;
 import com.icafe.demo.security.UserPrincipal;
@@ -44,29 +40,15 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Autowired
-    private IRoleRepository iRole;
-
-    private final String ROLE_STAFF = "STAFF";
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerApi(@RequestBody UserDTO user) {
         try {
-            User newUser = new User();
-            newUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-            newUser.setUsername(user.getUsername());
-            Role staffRole = iRole.findByRoleName(ROLE_STAFF).get();
-            newUser.setRole(staffRole);
-            newUser.setCreatedAt(LocalDateTime.now());
-            newUser.setUpdatedAt(LocalDateTime.now());
-            newUser = userService.createUser(newUser);
-            newUser.setCreatedBy(newUser.getId());
-            newUser.setUpdatedBy(newUser.getId());
-            userRepository.save(newUser);
+            userService.createUser(user);
             return ResponseEntity.ok("Account created successfull!");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -92,7 +74,7 @@ public class AuthController {
             return ResponseEntity.ok(token.getToken());  
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -117,7 +99,7 @@ public class AuthController {
 
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -133,7 +115,7 @@ public class AuthController {
             return ResponseEntity.ok("The password has been reseted!");
         } catch (Exception e) {
             System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred, please try again!");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

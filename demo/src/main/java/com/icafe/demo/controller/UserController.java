@@ -3,9 +3,11 @@ package com.icafe.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.icafe.demo.dto.UserRequestDTO;
 import com.icafe.demo.service.UserService.IUserService;
 
 import jakarta.validation.constraints.Max;
@@ -13,6 +15,9 @@ import jakarta.validation.constraints.Min;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @RestController
@@ -32,5 +37,17 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> createUser(@RequestBody UserRequestDTO dto) {
+        try {
+            return ResponseEntity.ok(userService.createUserByAdmin(dto));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
     
 }

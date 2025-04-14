@@ -7,6 +7,7 @@ import com.icafe.demo.models.Product;
 import jakarta.persistence.criteria.Predicate;
 
 public class ProductSpecification {
+    @SuppressWarnings("null")
     public static Specification<Product> hasSearchKeyword(String keyword, int categoryId) {
         return (root, query, cb) -> {
             Predicate deletedPredicate = cb.isFalse(root.get("deleted"));
@@ -31,6 +32,7 @@ public class ProductSpecification {
         };
     }
 
+    @SuppressWarnings("null")
     public static Specification<Product> hasSearchKeywordAndCategory(String keyword, int categoryId) {
         return (root, query, cb) -> {
             Predicate deletedPredicate = cb.isFalse(root.get("deleted"));

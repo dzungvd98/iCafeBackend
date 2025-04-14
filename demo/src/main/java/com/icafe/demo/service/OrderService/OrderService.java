@@ -220,7 +220,6 @@ public class OrderService implements IOrderService {
         return responseList;
     }
 
-    @Override
     public String getNextOrderCode() {
         return generateOrderCode();
     }

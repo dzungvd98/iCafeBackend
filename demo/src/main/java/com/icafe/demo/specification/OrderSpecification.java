@@ -34,6 +34,7 @@ public class OrderSpecification {
         };
     }
 
+    @SuppressWarnings("null")
     public static Specification<Order> hasSearchKeyword(String keyword) {
         return (root, query, cb) -> {
             Predicate deletedPredicate = cb.isFalse(root.get("deleted"));

@@ -153,6 +153,8 @@ public class ProductService implements IProductService {
             warehouse = warehouseRepository.save(warehouse);
             product.setWarehouse(warehouse);
             product.setIsDirectSale(true);
+        } else {
+                product.setIsDirectSale(false);
         }
 
         if (image != null && !image.isEmpty()) {

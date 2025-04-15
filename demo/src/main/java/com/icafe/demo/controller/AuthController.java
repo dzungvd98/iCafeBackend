@@ -40,7 +40,6 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
-
     @PostMapping("/register")
     public ResponseEntity<Object> registerApi(@RequestBody UserDTO user) {
         try {
@@ -64,6 +63,7 @@ public class AuthController {
             if(userPrincipal.isDeleted()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Account has been disabled!");
             }
+            tokenService.deleteUserToken(userPrincipal.getUserId());
 
             Token token = new Token();
             token.setToken(jwtUtil.generateToken(userPrincipal));

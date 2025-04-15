@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.icafe.demo.entity.Token;
 import com.icafe.demo.repository.ITokenRepository;
@@ -29,6 +30,11 @@ public class TokenServiceImpl implements ITokenService{
         token.setDeleted(true);
         token.setTokenExpDate(new Date(System.currentTimeMillis()));
         tokenRepository.save(token);
+    }
+
+    @Transactional
+    public void deleteUserToken(Integer userId) {
+        tokenRepository.softDeleteActiveTokenByUser(userId);
     }
     
 }

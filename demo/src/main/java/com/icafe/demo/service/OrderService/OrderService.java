@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,8 +30,10 @@ import com.icafe.demo.models.Order;
 import com.icafe.demo.models.OrderProduct;
 import com.icafe.demo.models.Product;
 import com.icafe.demo.models.ProductVariant;
+import com.icafe.demo.models.User;
 import com.icafe.demo.repository.IOrderRepository;
 import com.icafe.demo.repository.IProductVariantRepository;
+import com.icafe.demo.repository.IUserRepository;
 import com.icafe.demo.specification.OrderSpecification;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -43,6 +46,9 @@ public class OrderService implements IOrderService {
     @Autowired
     private IProductVariantRepository productVariantRepository;
 
+    @Autowired
+    private IUserRepository userRepository;
+
     @Override
     public PagingDataDTO<OrderResponseDTO> getOrders(String keyword, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
@@ -50,14 +56,19 @@ public class OrderService implements IOrderService {
         Page<Order> orders = orderRepository.findAll(spec, pageable);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         return PagingMapper.<Order, OrderResponseDTO>map(orders, (Order order) -> {
-            List<OrderProductResponseDTO> orderProductDtos = getOrderByOrderCode(order.getOrderCode()); 
+            List<OrderProductResponseDTO> orderProductDtos = getOrderByOrderCode(order.getOrderCode());
+            String username = Optional.ofNullable(order.getCreatedBy())
+                    .flatMap(userRepository::findById)
+                    .map(User::getUsername)
+                    .orElse(null);
 
             return new OrderResponseDTO(
                     order.getOrderCode(),
                     orderProductDtos,
                     order.getCreatedAt().format(formatter),
                     order.getTotalPrice(),
-                    order.getStatus().toString().toLowerCase());
+                    order.getStatus().toString().toLowerCase(),
+                    username);
         });
     }
 

@@ -13,12 +13,13 @@ import com.icafe.demo.service.UserService.IUserService;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-
+import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/users/")
@@ -43,6 +44,27 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody UserRequestDTO dto) {
         try {
             return ResponseEntity.ok(userService.createUserByAdmin(dto));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateUser(@RequestBody UserRequestDTO dto) {
+        try {
+            return ResponseEntity.ok(userService.updateUserByAdmin(dto));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("{username}")
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        try {
+            userService.deleteUserByAdmin(username);
+            return ResponseEntity.ok(username + " have been deleted!");
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

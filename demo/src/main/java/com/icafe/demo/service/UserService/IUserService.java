@@ -13,4 +13,6 @@ public interface IUserService {
     public UserPrincipal findByUsername(String username);
     public PagingDataDTO<UserResponseDTO> getListUsers(String keyword, int page, int size); 
     public User createUserByAdmin(UserRequestDTO userRequestDTO);
+    public User updateUserByAdmin(UserRequestDTO dto);
+    public void deleteUserByAdmin(String username);
 }

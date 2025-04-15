@@ -99,4 +99,25 @@ public class UserServiceImpl implements IUserService {
         return userRepository.save(newUser);
     }
 
+    @SuppressWarnings("null")
+    @Override
+    public User updateUserByAdmin(UserRequestDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername());
+        if (user == null) throw new EntityExistsException("User not found!");
+        if(!dto.getPassword().isBlank() && dto.getPassword() != null) {
+            user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
+        }
+        Role role = roleRepository.findByRoleName(dto.getRole()).get();
+        user.setRole(role);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUserByAdmin(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) throw new EntityExistsException("User not found!");
+        user.setDeleted(true);
+        userRepository.save(user);
+    }
+
 }

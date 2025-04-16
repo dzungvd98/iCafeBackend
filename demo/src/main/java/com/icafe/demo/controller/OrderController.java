@@ -3,6 +3,7 @@ package com.icafe.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +39,7 @@ public class OrderController {
     private IOrderProductService orderProductService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<?> getOrders(@RequestParam(defaultValue = "") String keyword,
                                     @RequestParam(defaultValue = "1") @Min(1) int page, 
                                     @RequestParam(defaultValue = "10") @Min(1) @Max(20) int size) {
@@ -50,6 +52,7 @@ public class OrderController {
     }
     
     @GetMapping("/{orderCode}/")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<?>  getDetailOrderByCode(@PathVariable String orderCode) {
         try {
             return ResponseEntity.ok(orderService.getOrderByOrderCode(orderCode)) ;
@@ -61,6 +64,7 @@ public class OrderController {
     
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<?> createNewOrder(@RequestBody OrderRequestDTO orderRequest) {
         try {
             return ResponseEntity.ok(orderService.createNewOrder(orderRequest)) ;
@@ -71,6 +75,7 @@ public class OrderController {
     }
     
     @PutMapping("/{orderCode}/")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<?> updateOrder(@PathVariable String orderCode, @RequestBody OrderRequestDTO orderRequest) {
         try {
             return ResponseEntity.ok(orderService.updateOrder(orderCode, orderRequest)) ;
@@ -81,6 +86,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{orderCode}/")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<?> deleteOrder(@PathVariable String orderCode) {
         try {
             orderService.deleteOrder(orderCode);
@@ -92,6 +98,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderCode}/")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<?> changeOrderStatus(@PathVariable String orderCode, @RequestParam OrderStatus status) {
         try {
             orderService.changeOrderStatus(orderCode, status);
@@ -103,6 +110,7 @@ public class OrderController {
     }
 
     @PatchMapping("/cancel-order-product/{orderProductId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<?> changeOrderStatus(@PathVariable int orderProductId) {
         try {
             orderProductService.cancelOrderProduct(orderProductId);

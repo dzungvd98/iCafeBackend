@@ -28,6 +28,7 @@ public class UserController {
     private IUserService userService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getUsers(@RequestParam(defaultValue = "") String keyword,
                                         @RequestParam(defaultValue = "1") @Min(1) int page, 
                                         @RequestParam(defaultValue = "10") @Min(1) @Max(20) int size) {
@@ -51,6 +52,7 @@ public class UserController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> updateUser(@RequestBody UserRequestDTO dto) {
         try {
             return ResponseEntity.ok(userService.updateUserByAdmin(dto));
@@ -61,6 +63,7 @@ public class UserController {
     }
 
     @DeleteMapping("{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
         try {
             userService.deleteUserByAdmin(username);

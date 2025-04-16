@@ -30,7 +30,7 @@ public class StatisticsController {
     @Autowired
     private ISatisticsService satisticsService;
 
-    @GetMapping("/top-selling-products/")
+    @GetMapping("/top-selling-products")
     public ResponseEntity<?> getTopSellingProduct(@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
             @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate,
             @RequestParam(defaultValue = "5") @Min(1) @Max(10) int topN,
@@ -46,7 +46,7 @@ public class StatisticsController {
         }
     }
 
-    @GetMapping("/orders/")
+    @GetMapping("/orders")
     public ResponseEntity<?> getStatisticOfOrder(@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
                                                 @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate) {
         try {
@@ -54,6 +54,20 @@ public class StatisticsController {
             LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX); 
             OrderStatisticsResponseDTO statistics = satisticsService.getOrderSatistics(startDateTime, endDateTime);
             return ResponseEntity.ok(statistics);
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/report")
+    public ResponseEntity<?> getReportOrderAtBetween(
+                                                @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
+                                                @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate) {
+        try {
+            LocalDateTime startDateTime = startDate.atStartOfDay();
+            LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX); 
+            return ResponseEntity.ok(satisticsService.getReportAtBetween(startDateTime, endDateTime));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

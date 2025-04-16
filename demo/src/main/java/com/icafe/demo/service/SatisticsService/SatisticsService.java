@@ -7,12 +7,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.icafe.demo.dto.OrderReportResponseDTO;
 import com.icafe.demo.dto.OrderStatisticsResponseDTO;
 import com.icafe.demo.dto.TopSellingProductResponseDTO;
 import com.icafe.demo.enums.OrderStatus;
 import com.icafe.demo.enums.ProductSaleSortType;
 import com.icafe.demo.repository.IOrderProductRepository;
 import com.icafe.demo.repository.IOrderRepository;
+
+import jakarta.transaction.Transactional;
 
 
 
@@ -40,7 +43,7 @@ public class SatisticsService implements ISatisticsService{
         long totalOrder = orderRepository.countByCreatedAtBetween(startDate, endDate);
         long successfullOrder = orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.COMPLETED);
         long cancelledOrder = orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.CANCELLED);
-        Double averageOrderValue = orderRepository.getAverageOrderValue(startDate, endDate);
+        Double averageOrderValue = orderRepository.getAverageOrderValue(startDate, endDate, OrderStatus.COMPLETED);
 
         statistics.setAverageOrderValue(averageOrderValue);
         statistics.setCancelledOrder(cancelledOrder);
@@ -48,6 +51,16 @@ public class SatisticsService implements ISatisticsService{
         statistics.setSuccessfullOrder(successfullOrder);
 
         return statistics;
+    }
+
+    @Transactional
+    public OrderReportResponseDTO getReportAtBetween(LocalDateTime startDate, LocalDateTime endDate) {
+        OrderReportResponseDTO report = new OrderReportResponseDTO();
+        report.setAvgOrderValue(orderRepository.getAverageOrderValue(startDate, endDate, OrderStatus.PENDING));
+        report.setProfit(orderRepository.getProfitAtBetweenAndStatus(startDate, endDate, OrderStatus.PENDING));
+        report.setRevenue(orderRepository.getRevenueAtBetweenAndStatus(startDate, endDate, OrderStatus.PENDING));
+        report.setTotalOrderQuantity(orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.PENDING));
+        return report;
     }
 }
     

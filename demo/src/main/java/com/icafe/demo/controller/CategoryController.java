@@ -80,6 +80,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}/products")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<?> getListProductByCategory(
                                         @PathVariable int categoryId,
                                         @RequestParam(defaultValue = "1") int page,

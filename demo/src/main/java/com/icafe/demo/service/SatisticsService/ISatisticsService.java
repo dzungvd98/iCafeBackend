@@ -13,6 +13,6 @@ import com.icafe.demo.enums.ProductSaleSortType;
 public interface ISatisticsService {
     OrderStatisticsResponseDTO getOrderSatistics(LocalDateTime startDate, LocalDateTime endDate);
     List<TopSellingProductResponseDTO> getTopSellingProduct(LocalDateTime startDate, LocalDateTime endDate, int topN, ProductSaleSortType sortType);
-    OrderReportResponseDTO getReportAtBetween(LocalDateTime startDate, LocalDateTime endDate);
-    List<RevenueResponseDTO> getDailyRevenue(LocalDate dateView);
+    OrderReportResponseDTO getOverviewReport(LocalDate dateView, String type);
+    List<RevenueResponseDTO> getRevenuePeriod(LocalDate dateView, String type);
 } 

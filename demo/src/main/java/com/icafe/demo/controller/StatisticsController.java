@@ -60,24 +60,23 @@ public class StatisticsController {
         }
     }
 
-    @GetMapping("/report")
+    @GetMapping("/report/overview")
     public ResponseEntity<?> getReportOrderAtBetween(
-                                                @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startDate,
-                                                @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endDate) {
+                                    @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateview,
+                                    @RequestParam(defaultValue = "daily") String type) {
         try {
-            LocalDateTime startDateTime = startDate.atStartOfDay();
-            LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX); 
-            return ResponseEntity.ok(satisticsService.getReportAtBetween(startDateTime, endDateTime));
+            return ResponseEntity.ok(satisticsService.getOverviewReport(dateview, type));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @GetMapping("/report/chart/daily")
-    public ResponseEntity<?> getDailyRevenue(@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateview) {
+    @GetMapping("/report/chart")
+    public ResponseEntity<?> getDailyRevenue(@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateview,
+                                            @RequestParam(defaultValue = "daily") String type) {
         try {
-            return ResponseEntity.ok(satisticsService.getDailyRevenue(dateview));
+            return ResponseEntity.ok(satisticsService.getRevenuePeriod(dateview, type));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

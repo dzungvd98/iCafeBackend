@@ -1,6 +1,9 @@
 package com.icafe.demo.service.SatisticsService;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.icafe.demo.dto.OrderReportResponseDTO;
 import com.icafe.demo.dto.OrderStatisticsResponseDTO;
+import com.icafe.demo.dto.RevenueResponseDTO;
 import com.icafe.demo.dto.TopSellingProductResponseDTO;
 import com.icafe.demo.enums.OrderStatus;
 import com.icafe.demo.enums.ProductSaleSortType;
@@ -57,10 +61,21 @@ public class SatisticsService implements ISatisticsService{
     public OrderReportResponseDTO getReportAtBetween(LocalDateTime startDate, LocalDateTime endDate) {
         OrderReportResponseDTO report = new OrderReportResponseDTO();
         report.setAvgOrderValue(orderRepository.getAverageOrderValue(startDate, endDate, OrderStatus.PENDING));
-        report.setProfit(orderRepository.getProfitAtBetweenAndStatus(startDate, endDate, OrderStatus.PENDING));
-        report.setRevenue(orderRepository.getRevenueAtBetweenAndStatus(startDate, endDate, OrderStatus.PENDING));
         report.setTotalOrderQuantity(orderRepository.countByCreatedAtBetweenAndStatus(startDate, endDate, OrderStatus.PENDING));
+        Double capitalPrice = orderRepository.getCapitalPriceAtBetweenAndStatus(startDate, endDate, OrderStatus.PENDING.toString());
+        Double revenue = orderRepository.getRevenueAtBetweenAndStatus(startDate, endDate, OrderStatus.PENDING);
+        report.setRevenue(revenue);
+        report.setProfit(revenue - capitalPrice);
         return report;
+    }
+
+    public List<RevenueResponseDTO> getDailyRevenue(LocalDate dateView) {
+    return orderRepository.findDailyRevenue(dateView, OrderStatus.PENDING.toString())
+            .stream()
+            .map(row -> new RevenueResponseDTO(
+                    row[0].toString(), // date
+                    new BigDecimal(row[1].toString())))
+            .collect(Collectors.toList());
     }
 }
     

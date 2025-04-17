@@ -91,7 +91,7 @@ public class OrderService implements IOrderService {
                     .orElseThrow(() -> new EntityNotFoundException("Not found product variant!"));
 
             Product product = variant.getProduct();
-            BigDecimal price = variant.getPrice().add(variant.getPrice());
+            BigDecimal price = variant.getPrice();
 
             orderProduct.setPriceEach(price);
             orderProduct.setIsCancel(false);

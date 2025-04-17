@@ -73,4 +73,14 @@ public class StatisticsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @GetMapping("/report/chart/daily")
+    public ResponseEntity<?> getDailyRevenue(@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateview) {
+        try {
+            return ResponseEntity.ok(satisticsService.getDailyRevenue(dateview));
+        } catch (Exception e) {
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 }

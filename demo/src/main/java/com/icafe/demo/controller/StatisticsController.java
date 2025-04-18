@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,6 +62,7 @@ public class StatisticsController {
     }
 
     @GetMapping("/report/overview")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<?> getReportOrderAtBetween(
                                     @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateview,
                                     @RequestParam(defaultValue = "daily") String type) {
@@ -73,6 +75,7 @@ public class StatisticsController {
     }
 
     @GetMapping("/report/chart")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<?> getDailyRevenue(@RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dateview,
                                             @RequestParam(defaultValue = "daily") String type) {
         try {

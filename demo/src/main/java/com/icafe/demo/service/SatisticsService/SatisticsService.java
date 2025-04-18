@@ -96,19 +96,19 @@ public class SatisticsService implements ISatisticsService {
         OrderReportResponseDTO report = new OrderReportResponseDTO();
         report.setAvgOrderValue(
                 Objects.requireNonNullElse(
-                        orderRepository.getAverageOrderValue(startDateTime, endDateTime, OrderStatus.PENDING),
+                        orderRepository.getAverageOrderValue(startDateTime, endDateTime, OrderStatus.COMPLETED),
                         0.0));
 
         report.setTotalOrderQuantity(
-                orderRepository.countByCreatedAtBetweenAndStatus(startDateTime, endDateTime, OrderStatus.PENDING));
+                orderRepository.countByCreatedAtBetweenAndStatus(startDateTime, endDateTime, OrderStatus.COMPLETED));
 
         Double capitalPrice = Objects.requireNonNullElse(
                 orderRepository.getCapitalPriceAtBetweenAndStatus(startDateTime, endDateTime,
-                        OrderStatus.PENDING.toString()),
+                        OrderStatus.COMPLETED.toString()),
                 0.0);
 
         Double revenue = Objects.requireNonNullElse(
-                orderRepository.getRevenueAtBetweenAndStatus(startDateTime, endDateTime, OrderStatus.PENDING),
+                orderRepository.getRevenueAtBetweenAndStatus(startDateTime, endDateTime, OrderStatus.COMPLETED),
                 0.0);
 
         report.setRevenue(revenue);
@@ -118,7 +118,7 @@ public class SatisticsService implements ISatisticsService {
 
     public List<RevenueResponseDTO> getRevenuePeriod(LocalDate dateView, String type) {
         List<Object[]> results;
-        String status = OrderStatus.PENDING.toString();
+        String status = OrderStatus.COMPLETED.toString();
         switch (type) {
             case "daily":
                 results = orderRepository.findDailyReport(dateView, status);

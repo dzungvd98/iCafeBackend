@@ -47,8 +47,8 @@ public interface IOrderRepository extends JpaRepository<Order, Integer>, JpaSpec
             "    FROM (SELECT 0 AS n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6) numbers "
             +
             ") d " +
-            "LEFT JOIN orders o ON DATE(o.created_at) = d.date AND o.status = :status " +
-            "LEFT JOIN order_products op ON o.order_code = op.order_code " +
+            "LEFT JOIN orders o ON DATE(o.created_at) = d.date " +
+            "LEFT JOIN order_products op ON o.order_code = op.order_code AND o.status = :status " +
             "LEFT JOIN products p ON op.product_id = p.product_id " +
             "GROUP BY d.date " +
             "ORDER BY d.date", nativeQuery = true)
@@ -56,29 +56,20 @@ public interface IOrderRepository extends JpaRepository<Order, Integer>, JpaSpec
             @Param("dateView") LocalDate dateView,
             @Param("status") String status);
 
-    @Query(value = "SELECT CONCAT(" +
-            "    DATE_FORMAT(MIN(d.week_start), '%d/%m'), '-', " +
-            "    DATE_FORMAT(MIN(d.week_end), '%d/%m') " +
-            ") AS period, " +
+        @Query(value = "SELECT CONCAT(DATE_FORMAT(d.week_start, '%d/%m'), '-', DATE_FORMAT(d.week_end, '%d/%m')) AS period, " +
             "COALESCE(SUM(op.quantity * op.price_each), 0) AS revenue, " +
             "COALESCE(SUM(op.quantity * op.price_each), 0) - COALESCE(SUM(op.quantity * p.base_price), 0) AS profit " +
             "FROM ( " +
             "    SELECT " +
-            "        DATE(:dateView - INTERVAL n WEEK) - INTERVAL (WEEKDAY(:dateView - INTERVAL n WEEK)) DAY AS week_start, "
-            +
-            "        DATE(:dateView - INTERVAL n WEEK) - INTERVAL (WEEKDAY(:dateView - INTERVAL n WEEK)) DAY + INTERVAL 6 DAY AS week_end, "
-            +
-            "        YEAR(:dateView - INTERVAL n WEEK) AS year, " +
-            "        WEEK(:dateView - INTERVAL n WEEK) AS week " +
-            "    FROM (SELECT 0 AS n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6) numbers "
-            +
+            "        DATE(:dateView - INTERVAL n WEEK - INTERVAL WEEKDAY(:dateView - INTERVAL n WEEK) DAY) AS week_start, " +
+            "        DATE(:dateView - INTERVAL n WEEK - INTERVAL WEEKDAY(:dateView - INTERVAL n WEEK) DAY + INTERVAL 6 DAY) AS week_end " +
+            "    FROM (SELECT 0 AS n UNION SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5 UNION SELECT 6) numbers " +
             ") d " +
-            "LEFT JOIN orders o ON YEAR(o.created_at) = d.year AND WEEK(o.created_at) = d.week AND o.status = :status "
-            +
+            "LEFT JOIN orders o ON o.created_at >= d.week_start AND o.created_at <= d.week_end AND o.status = :status " +
             "LEFT JOIN order_products op ON o.order_code = op.order_code " +
             "LEFT JOIN products p ON op.product_id = p.product_id " +
-            "GROUP BY d.year, d.week, d.week_start, d.week_end " +
-            "ORDER BY d.year, d.week", nativeQuery = true)
+            "GROUP BY d.week_start, d.week_end " +
+            "ORDER BY d.week_start", nativeQuery = true)
     List<Object[]> findWeeklyReport(
             @Param("dateView") LocalDate dateView,
             @Param("status") String status);

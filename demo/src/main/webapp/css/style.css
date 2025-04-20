@@ -1,0 +1,96 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Mar 23, 2025, 4:20:58 PM
+    Author     : ADMIN
+*/
+body {
+    
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+}
+
+.logo-container {
+    position: relative;
+    width: 64px;
+    height: 64px;
+}
+
+.logo-circle {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px solid #3b82f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-text {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: white;
+    color: #3b82f6;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 0 4px;
+    border-radius: 2px;
+}
+
+.btn-email {
+    border-radius: 50px;
+    height: 48px;
+    border-color: #dee2e6;
+}
+
+.btn-continue {
+    border-radius: 50px;
+    height: 48px;
+    background-color: #60a5fa;
+    border-color: #60a5fa;
+}
+
+.btn-continue:hover {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #6c757d;
+    margin: 1.5rem 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.divider span {
+    padding: 0 1rem;
+    background-color: #fff;
+}
+
+.form-control-lg {
+    border-radius: 50px;
+    height: 48px;
+}
+
+.create-account {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.create-account:hover {
+    text-decoration: underline;
+}

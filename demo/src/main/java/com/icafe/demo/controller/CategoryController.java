@@ -36,7 +36,7 @@ public class CategoryController {
     
 
     @GetMapping("/")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
+    // @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER', 'STAFF')")
     public ResponseEntity<?> getAllCategory() {
         try {
             return ResponseEntity.ok(Map.of("data", categoryService.getAllCategory()));

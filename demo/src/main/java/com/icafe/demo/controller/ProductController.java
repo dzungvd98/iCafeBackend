@@ -67,7 +67,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<?> createNewProduct(
                         @RequestPart("data") String productData,
-                        @RequestPart("image") MultipartFile image) {
+                        @RequestPart(value = "image", required = false) MultipartFile image) {
         try {
             ProductRequestDTO dto = productMapper.mapToProductRequestDTO(productData);
             return ResponseEntity.ok(productService.createNewProduct(dto, image));
@@ -81,7 +81,7 @@ public class ProductController {
     public ResponseEntity<?> updateProduct(
                                         @PathVariable int productId, 
                                         @RequestPart("data") String productData,
-                                        @RequestPart("image") MultipartFile image) {
+                                        @RequestPart(value = "image", required = false) MultipartFile image) {
         try {
             ProductRequestDTO dto = productMapper.mapToProductRequestDTO(productData);
             return ResponseEntity.ok(productService.updateProduct(productId, dto, image));

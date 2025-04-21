@@ -6,8 +6,8 @@ function responseHandler(data) {
   setCookie("token", data, 1);
   setTimeout(function () {
     // Navigate to index.html
-    window.location.href = "order";
-  }, 1250);
+    navigateToCorrectPage();
+  }, 1000);
 }
 
 //Hàm setCookie đã giới thiệu ở bài trước
@@ -79,50 +79,73 @@ function validatePassword(password) {
 }
 
 function deleteCookie(name) {
-    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
 function showToast(message, type) {
-                // Lấy phần tử Toast và toast-content
-                var toastEl = document.getElementById('myToast');
-                var toastContent = toastEl.querySelector('#toast-content');
-                var iconToast = toastEl.querySelector('.icon-toast i');
-                var zoneIcon = toastEl.querySelector('.icon-toast');
+  // Lấy phần tử Toast và toast-content
+  var toastEl = document.getElementById('myToast');
+  var toastContent = toastEl.querySelector('#toast-content');
+  var iconToast = toastEl.querySelector('.icon-toast i');
+  var zoneIcon = toastEl.querySelector('.icon-toast');
 
-                // Cập nhật nội dung thông báo
-                if (toastContent) {
-                    toastContent.textContent = message;
-                }
+  // Cập nhật nội dung thông báo
+  if (toastContent) {
+    toastContent.textContent = message;
+  }
 
-                // Xóa các lớp màu và icon cũ
-                zoneIcon.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info');
-                if (iconToast) {
-                    iconToast.classList.remove('bi-check-lg', 'bi-exclamation-triangle', 'bi-info-circle');
-                }
+  // Xóa các lớp màu và icon cũ
+  zoneIcon.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info');
+  if (iconToast) {
+    iconToast.classList.remove('bi-check-lg', 'bi-exclamation-triangle', 'bi-info-circle');
+  }
 
-                // Cập nhật màu nền và icon dựa trên type
-                if (type === "success") {
-                    if (iconToast) {
-                        iconToast.classList.add('bi-check-lg'); // Icon check cho success
-                    }
-                } else if (type === "error") {
-                    zoneIcon.classList.add('bg-danger');
-                    if (iconToast) {
-                        iconToast.classList.add('bi-x-circle'); // Icon lỗi cho error
-                    }
-                } else if (type === "warning") {
-                    zoneIcon.classList.add('bg-warning');
-                    if (iconToast) {
-                        iconToast.classList.add('bi-exclamation-triangle'); // Icon cảnh báo cho warning
-                    }
-                } else {
-                    zoneIcon.classList.add('bg-info');
-                    if (iconToast) {
-                        iconToast.classList.add('bi-info-circle'); // Icon thông tin cho info
-                    }
-                }
+  // Cập nhật màu nền và icon dựa trên type
+  if (type === "success") {
+    if (iconToast) {
+      iconToast.classList.add('bi-check-lg'); // Icon check cho success
+    }
+  } else if (type === "error") {
+    zoneIcon.classList.add('bg-danger');
+    if (iconToast) {
+      iconToast.classList.add('bi-x-circle'); // Icon lỗi cho error
+    }
+  } else if (type === "warning") {
+    zoneIcon.classList.add('bg-warning');
+    if (iconToast) {
+      iconToast.classList.add('bi-exclamation-triangle'); // Icon cảnh báo cho warning
+    }
+  } else {
+    zoneIcon.classList.add('bg-info');
+    if (iconToast) {
+      iconToast.classList.add('bi-info-circle'); // Icon thông tin cho info
+    }
+  }
 
-                // Khởi tạo và hiển thị Toast
-                var toast = new bootstrap.Toast(toastEl);
-                toast.show();
-            }
+  // Khởi tạo và hiển thị Toast
+  var toast = new bootstrap.Toast(toastEl);
+  toast.show();
+}
+
+function navigateToCorrectPage() {
+  const token = getCookie("token"); // hoặc lấy từ localStorage nếu bạn dùng cái đó
+  if (token && isTokenValid(token)) {
+    const role = getUserRoleFromToken(token);
+
+
+    switch (role) {
+      case "ADMIN":
+        window.location.href = "report";
+        break;
+      case "STAFF":
+        window.location.href = "order";
+        break;
+      case "MANAGER":
+        window.location.href = "report";
+        break;
+      default:
+        alert("Không xác định được quyền người dùng!");
+        window.location.href = "login";
+    }
+  }
+}

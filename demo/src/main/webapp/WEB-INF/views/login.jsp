@@ -46,7 +46,6 @@
 
                             <div class="mb-4 password-container-liem">
                                 <input type="password" name ="password" class="form-control form-control-lg" id="input-password" placeholder="Mật Khẩu">
-                                <span class="toggle-visibility-liem" onclick="toggleVisibilitylogin('password', this)">👁️</span>
                             </div>
 
                             <button id="btn-login" class="btn btn-primary w-100 btn-continue rounded-pill">
@@ -69,7 +68,7 @@
         <!-- Bootstrap 5 JS Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="js/action.js"></script>
+        <script src="js/action.js?v=" + new Date().getTime()></script>
     <script>
         $(document).ready(function () {
             // VÙNG 1: VÙNG KHAI BÁO BIẾN TOÀN CỤC
@@ -103,7 +102,7 @@
                     success: function (response) {
                         showToast("Đăng nhập thành công!", "success");
                         responseHandler(response);
-                        window.location.href = "order";
+                            // window.location.href = "order";
                     },
                     error: function (error) {
                         showToast("Tên đăng nhập hoặc mật khẩu sai!", "success");
@@ -125,7 +124,7 @@
                             window.location.href = "order";
                             break;
                         case "MANAGER":
-                            window.location.href = "order";
+                            window.location.href = "report";
                             break;
                         default:
                             alert("Không xác định được quyền người dùng!");

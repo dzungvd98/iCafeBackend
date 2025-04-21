@@ -558,11 +558,15 @@
                 function onPageLoading() {
                     callApiToLoadProducts("");
                     callApiToLoadCategories();
-                    // navigateToCorrectPage();
+                    navigateToCorrectPage();
                 }
 
                 // Confirm delete
                 function onConfirmDeleteClick() {
+                    let vHeaders = {
+                        Authorization: "Token " + getCookie("token")
+                    };
+
                     if (gCurrentDeleteId) {
                         $.ajax({
                             url: gBASE_URL + `/products/` + gCurrentDeleteId,
@@ -601,6 +605,11 @@
                     e.preventDefault();
                     let vFormData = getDataProductToCreate(this);
                     if(!vFormData) return;
+
+                    let vHeaders = {
+                        Authorization: "Token " + getCookie("token")
+                    };
+
                     $.ajax({
                         url: gBASE_URL + "/products/",
                         type: "POST",
@@ -608,6 +617,7 @@
                         processData: false,
                         contentType: false,
                         dataType: "json",
+                        headers: vHeaders,
                         success: function (response) {
                             $("#create-modal").modal("hide");
                             callApiToLoadProducts(($("#input-search").val() || "").trim());
@@ -630,6 +640,10 @@
                     e.preventDefault();
                     const formData = getDataProductToEdit(this);
                     if(!formData) return;
+
+                    let vHeaders = {
+                        Authorization: "Token " + getCookie("token")
+                    };
                     $.ajax({
                         url: gBASE_URL + `/products/` + gProductSelected + `/update`,
                         type: "PUT",
@@ -637,6 +651,7 @@
                         processData: false,
                         contentType: false,
                         dataType: "json",
+                        headers: vHeaders,
                         success: function (response) {
                             $("#edit-modal").modal("hide");
                             callApiToLoadProducts(($("#input-search").val() || "").trim());
@@ -694,14 +709,23 @@
                 // VÙNG 4: VÙNG VIẾT CÁC HÀM DÙNG CHUNG
                 // Load products
                 function callApiToLoadProducts(keyword) {
+                    let vHeaders = {
+                        Authorization: "Token " + getCookie("token")
+                    };
+
                     $.ajax({
                         url: gBASE_URL + `/products/?keyword=`+ keyword +`&page=`+ gPage + `&size=` + gSize,
                         method: "GET",
                         dataType: "json",
+                        headers: vHeaders,
                         success: function (response) {
                             loadProductsToPage(response);
                         },
                         error: function (error) {
+                            if (error.status === 403) {
+                                deleteCookie("token");
+                                window.location.href = "login";
+                            }
                             console.error("Error loading products:", error);
                         }
                     });
@@ -752,14 +776,13 @@
                     let vHeaders = {
                         Authorization: "Token " + getCookie("token")
                     };
-                    console.log(vHeaders);
+
                     $.ajax({
                         url: gBASE_URL + "/categories/",
                         method: "GET",
                         dataType: "json",
                         headers: vHeaders,
                         success: function (categories) {
-                            console.log(categories);
                             let $categorySelects = $("#category, #edit-category");
                             $.each(categories.data, function (index, category) {
                                 let vOption = `<option value="` + category.id + `">` + category.categoryName + `</option>`;
@@ -774,11 +797,15 @@
 
                 // Load product details
                 function callApiToLoadProductDetails(itemId) {
+                    let vHeaders = {
+                        Authorization: "Token " + getCookie("token")
+                    };
+
                     $.ajax({
                         url: gBASE_URL + `/products/` + itemId + `/details`,
                         type: "GET",
                         data: { detailID: itemId },
-                        dataType: "json",
+                        headers: vHeaders,
                         success: function (response) {
                             $(".detail-title").text("#" + response.productId + " - " + response.productName);
                             $(".detail-categoryName").text(response.categoryName);
@@ -811,11 +838,14 @@
 
                 // Load product for edit
                 function callApiToLoadProductForEdit(itemId) {
+                    let vHeaders = {
+                        Authorization: "Token " + getCookie("token")
+                    };
+
                     $.ajax({
                         url: gBASE_URL + `/products/` + itemId + `/details`,
                         type: "GET",
-                        data: { detailID: itemId },
-                        dataType: "json",
+                        headers: vHeaders,
                         success: function (response) {
                             $(".edit-productid").val(response.productId);
                             $(".edit-productname").val(response.productName);

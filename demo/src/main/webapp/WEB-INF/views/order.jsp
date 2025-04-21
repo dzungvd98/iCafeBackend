@@ -730,10 +730,6 @@
                 },
                 error: function (xhr, status, error) {
                     console.error("Error loading products:", error);
-                    if (xhr.status === 403) {
-                        deleteToken("token");
-                        window.location.href = "login";
-                    }
                 }
             });
         }
@@ -806,11 +802,11 @@
                     }
                     gIsLoading = false;
                 },
-                error: function (xhr, status, error) {
+                error: function (error) {
                     console.error("Error loading products:", error);
                     gIsLoading = false;
-                    if (xhr.status === 403) {
-                        deleteToken("token");
+                    if (error.status === 403) {
+                        deleteCookie("token");
                         window.location.href = "login";
                     }
                 }
@@ -864,10 +860,10 @@
                     loadResponseCategory(data);
 
                 },
-                error: function (xhr, status, error) {
+                error: function (error) {
                     console.error("Không thể tải danh sách danh mục!");
-                    if (xhr.status === 403) {
-                        deleteToken("token");
+                    if (error.status === 403) {
+                        deleteCookie("token");
                         window.location.href = "login";
                     }
                 }

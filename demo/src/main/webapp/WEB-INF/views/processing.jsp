@@ -121,7 +121,7 @@
 
         <div class="wrap-order-button" style="display: flex; justify-content: center;">
             <div class="order-button">
-                <a href="order.jsp" style="text-decoration: none;">Đặt hàng</a>
+                <a href="order" style="text-decoration: none;">Đặt hàng</a>
             </div>
         </div>
         <div class="wrap-nav">

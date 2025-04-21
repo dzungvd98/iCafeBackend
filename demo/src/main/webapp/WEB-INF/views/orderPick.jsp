@@ -814,8 +814,8 @@
                         loadDetailProductToPopupUpdate(response);
                     },
                     error: function (error) {
-                        if (xhr.status === 403) {
-                            deleteToken("token");
+                        if (error.status === 403) {
+                            deleteCookie("token");
                             window.location.href = "login";
                         }
                         console.error("Error loading products:", error);

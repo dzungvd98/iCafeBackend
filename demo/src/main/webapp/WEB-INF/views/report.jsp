@@ -347,7 +347,7 @@
                 .catch(error => {
                     console.error('Lỗi khi tải thống kê báo cáo:', error);
                     if (error.status === 403) {
-                        deleteToken("token");
+                        deleteCookie("token");
                         window.location.href = "login";
                     }
                 });

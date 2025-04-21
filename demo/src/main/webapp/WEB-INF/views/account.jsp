@@ -473,10 +473,12 @@
                         loadUserDataToTable(response);
                     },
                     error: function(error) {
+                    
                         if (error.status === 403) {
                             deleteCookie("token");
                             window.location.href = "login";
                         }
+                        showToast(error.responseText, "error");
                     }
                 });
             }
@@ -505,7 +507,7 @@
                     },
                     error: function(error) {
                         console.log(error);
-                        showToast("Có lỗi xảy ra, vui lòng thử tại!", "error");
+                        showToast(error.responseText, "error");
                     }
                 });
             }

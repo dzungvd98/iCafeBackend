@@ -8,36 +8,41 @@ public class PageController {
 
     @GetMapping("/login")
     public String login() {
-        return "login"; // sẽ map tới /WEB-INF/jsp/home.jsp
+        return "login";
     }
 
      @GetMapping("/order")
     public String home() {
-        return "order"; // sẽ map tới /WEB-INF/jsp/home.jsp
+        return "order"; 
     }
 
     @GetMapping("/product")
     public String product() {
-        return "product"; // /WEB-INF/jsp/about.jsp
+        return "product"; 
     }
 
     @GetMapping("/account")
     public String account() {
-        return "account"; // /WEB-INF/jsp/contact.jsp
+        return "account"; 
     }
 
     @GetMapping("/orderpick")
     public String cart() {
-        return "orderPick"; // /WEB-INF/jsp/contact.jsp
+        return "orderPick";
     }
 
     @GetMapping("/processing")
     public String processing() {
-        return "processing"; // /WEB-INF/jsp/contact.jsp
+        return "processing";
     }
 
     @GetMapping("/report")
     public String report() {
-        return "report"; // /WEB-INF/jsp/contact.jsp
+        return "report"; 
+    }
+
+    @GetMapping("/category")
+    public String category() {
+        return "category"; 
     }
 }

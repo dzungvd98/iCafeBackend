@@ -10,7 +10,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Danh sách tài khoản</title>
+    <title>Danh mục</title>
     <link rel="stylesheet" href="css/style_menu.css" />
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -82,7 +82,7 @@
             </div>
         </div>
         <div class="wrap-nav">
-            <div class="nav-item nav-category">
+            <div class="nav-item nav-category active">
                 <a href="category">
                     <i class="bi bi-grid"></i>
                     Danh mục
@@ -109,7 +109,7 @@
                     Báo cáo
                 </a>
             </div>
-            <div class="nav-item nav-account active">
+            <div class="nav-item nav-account ">
                 <a href="account">
                     <i class="bi bi-people"></i>
                     Tài Khoản
@@ -126,7 +126,7 @@
                 <button class="btn btn-sm d-none mobile-menu-toggle">
                     <i class="bi bi-list"></i>
                 </button>
-                <span class="fw-medium">Tài khoản</span>
+                <span class="fw-medium">Danh mục</span>
             </div>
 
             <div class="d-flex align-items-center">
@@ -193,26 +193,21 @@
                 <table id="table-users" class="warp-table">
                     <thead class="table-header">
                         <tr>
-                            <th style="width:5%">STT</th>
-                            <th style="width:18%">Tên tài khoản</th>
-                            <th style="width:12%">Ngày tạo</th>
-                            <th style="width:10%">Người tạo</th>
-                            <th style="width:15%">Vai trò</th>
-                            <th style="width:12%">Ngày cập nhật</th>
-                            <th style="width:10%">Người cập nhật</th>
-                            <th style="width:8%">Thao tác</th>
+                            <th >STT</th>
+                            <th >Tên danh mục</th>
+                            <th >Số lượng sản phẩm</th>
+                            <th >Ngày cập nhật cuối</th>
+                            <th >Người cập nhật</th>
+                            <th >Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr class="product-row" data-bs-toggle="modal" data-bs-target="#slideModal">
                         <tr>
                             <td>STT</td>
-                            <td>Tên tài khoản</td>
-                            <td>Ngày tạo</td>
-                            <td>Người tạo</td>
-
-                            <td>Vai trò</td>
-                            <td>Ngày cập nhật</td>
+                            <td>Tên danh mục</td>
+                            <th>Số lượng sản phẩm</th>
+                            <td>Ngày cập nhật cuối</td>
                             <td>Người cập nhật</td>
                             <td>
                                 <button class="action-button edit-btn" data-bs-toggle="modal"
@@ -240,11 +235,11 @@
         <div class="modal-dialog modal-dialog-centered modal-confirm">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Xóa tài khoản</h5>
+                    <h5 class="modal-title" id="confirmationModalLabel">Xóa danh mục</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Bạn có chắc chắn muốn xóa tài khoản <span id="span-username" style="font-style: bold;"> </span> không? </p>
+                    <p>Xóa danh mục sẽ có <span id="span-number-product" style="font-weight: bold;"> </span> bị ảnh hưởng, chắc chắn không? </p>
                 </div>
                 <div class="modal-footer" >
                     
@@ -270,36 +265,19 @@
             <div class="modal-content" style="height: 100%;">
                     <div class="modal-header">
                         <div class="wrap-header-modal">
-                            <div style="font-size: 20px; font-weight: 500">Tạo tài khoản</div>
+                            <div style="font-size: 20px; font-weight: 500">Tạo danh mục</div>
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <input type="text" placeholder="Tên đăng nhập" name="productName" class="form-control"
-                                id="input-username-create" value="" autocomplete="off">
-                            <small id="username-error" style="color: red; display: none;"></small>
-                        </div>
-                        <div class="mb-3">
-                            <label for="size" class="form-label">Mật khẩu</label>
-                            <div class="input-group">
-                                <input type="password" placeholder="Mật khẩu" class="form-control" id="input-password-create"
-                                    value="" style="width: 100%" autocomplete="new-password">
-                                <small id="password-error" style="color: red; display: none;"></small>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="role" class="form-label">Vai trò</label>
-                            <select class="form-select" id="select-role-create">
-                                <option value="STAFF">Nhân viên</option>
-                                <option value="MANAGER">Quản lý</option>
-                                <option value="ADMIN">Admin</option>
-                            </select>
+                            <input type="text" placeholder="Tên danh mục" name="productName" class="form-control"
+                                id="input-category-create" value="" autocomplete="off">
                         </div>
 
                     </div>
                     <div class="modal-footer">
-                        <button id="btn-create-user" class="btn btn-secondary"
+                        <button id="btn-create-category" class="btn btn-secondary"
                             style="background-color: #1F75FF">Tạo</button>
                     </div>
             </div>
@@ -321,30 +299,14 @@
             <div class="modal-content" style="height: 100%;">
                     <div class="modal-header">
                         <div class="wrap-header-modal">
-                            <div style="font-size: 20px; font-weight: 500">Cập nhật tài khoản</div>
+                            <div style="font-size: 20px; font-weight: 500">Cập nhật danh mục</div>
                         </div>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="size" class="form-label" >Tên đăng nhập</label>
-                            <input id="input-user-update" type="text" name="username" class="form-control edit-productname" value="" disabled>
-                        </div>
-                        <div class="mb-3">
-                            <label for="size" class="form-label">Mật khẩu</label>
-                            <div class="input-group">
-                                <input type="password" name="productPrice" class="form-control" id="input-password-update"
-                                    value="" style="width: 100%" autocomplete="off">
-                                <small id="password-error-update" style="color: red; display: none;"></small>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="role" class="form-label">Vai trò</label>
-                            <select class="form-select" id="select-role-update" name="role">
-                                <option value="STAFF">Nhân viên</option>
-                                <option value="MANAGER">Quản lý</option>
-                                <option value="ADMIN">Admin</option>
-                            </select>
+                            <label for="size" class="form-label" >Tên danh mục</label>
+                            <input id="input-category-update" type="text" name="categoryname" class="form-control edit-productname" value="">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -382,7 +344,7 @@
             let gPage = 1;
             let gSize = 10;
             let debounceTimer;
-            let gUsername = null;
+            let gCategoryId = null;
 
             // VÙNG 2: VÙNG GÁN VÀ THỰC THI SỰ KIỆN CHO CÁC ELEMENT
             onPageLoading();
@@ -395,14 +357,14 @@
                 clearTimeout(debounceTimer);
                 debounceTimer = setTimeout(function () {
                     resetPage();
-                    callApiToGetListUser(vKeyword);
+                    callApiToGetListCategory(vKeyword);
                 }, 400); // chờ 400ms sau khi ngừng gõ
             });
 
             $("#btn-next-page").on("click", function () {
                 let vKeyword = ($("#input-search").val() || "").trim();
                 gPage++;
-                callApiToGetListUser(vKeyword);
+                callApiToGetListCategory(vKeyword);
             });
 
             // Xử lý sự kiện quay lại trang trước
@@ -410,29 +372,31 @@
                 let vKeyword = ($("#input-search").val() || "").trim();
 
                 gPage--;
-                callApiToGetListUser(vKeyword);
+                callApiToGetListCategory(vKeyword);
             });
 
             
             //Thực thi sự kiện nhấn nút tạo tài khoản
-            $("#btn-create-user").on("click", function() {
-                callApiToCreateUser();
+            $("#btn-create-category").on("click", function() {
+                callApiToCreateCategory();
             });
 
             // Thực thi sự kiện nhấn nút sửa tài khoản
             $("#table-users").on('click', '.edit-btn', function() {
-                onBtnEditUserClick(this);
+                onBtnEditCategoryClick(this);
             });
 
             // Thực thi sự kiện nhấn nút xác nhận sửa tài khoản
             $("#btn-update-user").on("click", function() {
-                onBtnConfirmUpdateUserClick();
+                onBtnConfirmUpdateCategoryClick();
             });
 
             // Thực thi sự kiện nhấn nút delete tài khoản
             $("#table-users").on('click', '.delete-btn', function() {
                 let vRow = $(this).closest('tr');
-                gUsername = vRow.find('td:eq(1)').text();
+                gCategoryId = vRow.find('td:eq(0)').attr("id");
+                let vNumberProduct = vRow.find('td:eq(2)').text();
+                $("#span-number-product").text(vNumberProduct);
             });
 
             // Thực thi sự kiện nhấn nút xóa tài khoản
@@ -442,9 +406,8 @@
 
             // VÙNG 3: VÙNG VIẾT CÁC HÀM XỬ LÝ SỰ KIỆN
             function onPageLoading() {
-                resetFormCreateAccount();
                 navigateToCorrectPage();
-                callApiToGetListUser("");
+                callApiToGetListCategory("");
             }
 
             function onBtnConfirmDeleteClick() {
@@ -452,13 +415,13 @@
                     Authorization: "Token " + getCookie("token")
                 };
                 $.ajax({
-                    url: gBASE_URL + "/users/" + gUsername,
+                    url: gBASE_URL + "/categories/" + gCategoryId,
                     method: "DELETE",
                     headers: vHeaders,
                     success: function(response) {
                         $("#modal-delete").modal("hide");
                         let vKeyword = $("#input-search").val();
-                        callApiToGetListUser(vKeyword);
+                        callApiToGetListCategory(vKeyword);
                     },
                     error: function(error) {
                         console.log(error);
@@ -467,12 +430,12 @@
             }
 
             // VÙNG 4: VÙNG VIẾT CÁC HÀM DÙNG CHUNG
-            function callApiToGetListUser(keyword) {
+            function callApiToGetListCategory(keyword) {
                 let vHeaders = {
                     Authorization: "Token " + getCookie("token")
                 };
                 $.ajax({
-                    url: gBASE_URL + "/users/?keyword=" + keyword + "&page=" + gPage + "&size=" + gSize,
+                    url: gBASE_URL + "/categories/all?keyword=" + keyword + "&page=" + gPage + "&size=" + gSize,
                     method: "GET",
                     headers: vHeaders,
                     success: function(response) {
@@ -490,26 +453,27 @@
             }
 
             // Hàm call Api để tạo mới user
-            function callApiToCreateUser() {
+            function callApiToCreateCategory() {
                 let vHeaders = {
                     Authorization: "Token " + getCookie("token")
                 };
-                let vUserCreateData = getUserCreateData();
-                
-                if(!validateFormCreateAccount(vUserCreateData)) {
+                let vCategoryName = $("#input-category-create").val();
+                if(vCategoryName == "" || !vCategoryName) {
+                    showToast("Tên danh mục không được bỏ trống!", "warning");
                     return;
                 }
+                
                 $.ajax({
-                    url: gBASE_URL + "/users/",
+                    url: gBASE_URL + "/categories/?newCategoryName=" + vCategoryName,
                     method: "POST",
                     headers: vHeaders,
                     contentType: "application/json",
-                    data: JSON.stringify(vUserCreateData),
+                    data: JSON.stringify(vCategoryName),
                     success: function(response) {
                         $("#create-modal").modal("hide");
-                        resetFormCreateAccount();
-                        callApiToGetListUser("");
-                        showToast("Tạo tài khoản thành công!", "success");
+                        $("#input-category-create").val("");
+                        callApiToGetListCategory("");
+                        showToast("Tạo danh mục thành công!", "success");
                     },
                     error: function(error) {
                         console.log(error);
@@ -519,25 +483,22 @@
             }
 
             //Hàm load user to table
-            function loadUserDataToTable(responseUserData) {
+            function loadUserDataToTable(responseCategoryData) {
                 let vTBody = $('#table-users tbody');
-                if (!responseUserData?.contents?.length) {
-                    vTBody.empty().append('<tr><td colspan="5">Không tìm thấy người dùng</td></tr>');
-                    displayPagination(responseUserData);
+                if (!responseCategoryData?.contents?.length) {
+                    vTBody.empty().append('<tr><td colspan="5">Không tìm thấy danh mục</td></tr>');
+                    displayPagination(responseCategoryData);
                     return;
                 }
-                let vStartNum = (responseUserData.pageNumber - 1) * 10 + 1; 
+                let vStartNum = (responseCategoryData.pageNumber - 1) * 10 + 1; 
                 vTBody.empty();
-                $.each(responseUserData.contents, function(index, user) {
+                $.each(responseCategoryData.contents, function(index, category) {
                     let vRow = `<tr>
-                            <td>`+ (vStartNum++) +`</td>
-                            <td>`+ user.username +`</td>
-                            <td>`+ user.timeCreated +`</td>
-                            <td>`+ user.createdBy+`</td>
-
-                            <td value = `+ user.role +`>`+ mapRole(user.role) +`</td>
-                            <td>`+ user.updatedAt +`</td>
-                            <td>`+ user.updatedBy +`</td>
+                            <td id=`+ category.categoryId +`>`+ (vStartNum++) +`</td>
+                            <td>`+ category.categoryName +`</td>
+                            <td>`+ category.numberProduct +` sản phẩm</td>
+                            <td>`+ category.timeUpdated +`</td>
+                            <td>`+ category.updatedBy+`</td>
                             <td>
                                 <button class="action-button edit-btn" data-bs-toggle="modal"
                                     data-bs-target="#edit-modal">
@@ -550,16 +511,16 @@
                             </td>
                         </tr>`
                     vTBody.append(vRow);
-                    displayPagination(responseUserData);
+                    displayPagination(responseCategoryData);
                 });
             }
             
             // Hàm hiển thị phân trang
-            function displayPagination(responseUserData) {
+            function displayPagination(responseCategoryData) {
                 let vPageDisplay = $("#page-display");
-                let vStartNum = (responseUserData.pageNumber - 1) * responseUserData.pageSize + 1;
-                let vEndNum = vStartNum + responseUserData.numberOfElements - 1;
-                vPageDisplay.html(vStartNum + " - " + vEndNum + " trong số " + responseUserData.totalElements);
+                let vStartNum = (responseCategoryData.pageNumber - 1) * responseCategoryData.pageSize + 1;
+                let vEndNum = vStartNum + responseCategoryData.numberOfElements - 1;
+                vPageDisplay.html(vStartNum + " - " + vEndNum + " trong số " + responseCategoryData.totalElements);
                 $("#span-current-page").html(gPage);
 
                 if (gPage <= 1) {
@@ -568,7 +529,7 @@
                     $("#btn-prev-page").prop("disabled", false);
                 }
 
-                if (gPage >= responseUserData.totalPages) {
+                if (gPage >= responseCategoryData.totalPages) {
                     $("#btn-next-page").prop("disabled", true);
                 } else {
                     $("#btn-next-page").prop("disabled", false);
@@ -578,16 +539,6 @@
             function resetPage() {
                 gPage = 1;
                 gSize = 10;
-            }
-
-            // Get data user to create
-            function getUserCreateData() {
-                let vUserCreateData = {
-                    username: $("#input-username-create").val().trim(),
-                    password: $("#input-password-create").val(),
-                    role: $("#select-role-create").val()
-                };
-                return vUserCreateData;
             }
 
             // Map role
@@ -605,12 +556,12 @@
             }
 
             // Hàm xử lý sự kiện nhấn nút edit user trong table
-            function onBtnEditUserClick(element) {
+            function onBtnEditCategoryClick(element) {
                 let vRow = $(element).closest('tr');
-                let vUsername = vRow.find('td:eq(1)').text();
-                let vRoleValue = vRow.find('td:eq(4)').attr('value');
-                $('#select-role-update').val(vRoleValue);
-                $("#input-user-update").val(vUsername);
+                let vCategoryId = vRow.find('td:eq(0)').attr("id");
+                let vCategoryName = vRow.find('td:eq(1)').text();
+                gCategoryId = vCategoryId;
+                $("#input-category-update").val(vCategoryName);
             }
 
             // Function get user data to update
@@ -623,30 +574,29 @@
                 return vUserDataUpdate
             }
             // Function confirm update data
-            function onBtnConfirmUpdateUserClick() {
-                let vUserDataUpdate = getUserDataToUpdate();
-                
-                if(!validatePasswordAndShowError(vUserDataUpdate.password)) {
+            function onBtnConfirmUpdateCategoryClick() {
+                let vNewCategoryName = $("#input-category-update").val();
+                if(vNewCategoryName == "" || !vNewCategoryName) {
+                    showToast("Tên danh mục không được bỏ trống", "warning");
                     return;
                 }
                 let vHeaders = {
                     Authorization: "Token " + getCookie("token")
                 };
                 $.ajax({
-                    url: gBASE_URL + "/users/",
+                    url: gBASE_URL + "/categories/" + gCategoryId + "?newCategoryName=" + vNewCategoryName,
                     method: "PUT",
                     headers: vHeaders,
                     contentType: "application/json",
-                    data: JSON.stringify(vUserDataUpdate),
                     success: function(response) {
                         let vKeyword = $("#input-search").val();
-                        callApiToGetListUser(vKeyword);
-                        showToast("Cập nhật tài khoản thành công!", "success");
-                        $("#input-password-update").val("");
+                        callApiToGetListCategory(vKeyword);
+                        showToast("Cập nhật danh mục thành công!", "success");
+                        $("#input-category-update").val("");
                     },
                     error: function(error) {
                         console.log(error);
-                        showToast("Cập nhật tài khoản thất bại!", "error");
+                        showToast(error.responseText, "error");
                         
                     }  
 
@@ -679,12 +629,6 @@
                 }
             }
             
-            function resetFormCreateAccount() {
-                $("#input-username-create").val("");
-                $("#input-password-create").val("");
-                $("#select-role-create").val("STAFF");
-            }
-        
               function validateFormCreateAccount(userAccountData) {
                 let isValid = true;
 

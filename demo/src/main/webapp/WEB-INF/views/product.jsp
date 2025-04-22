@@ -86,6 +86,12 @@
             </div>
         </div>
         <div class="wrap-nav">
+            <div class="nav-item nav-category" hidden>
+                <a href="category">
+                    <i class="bi bi-grid"></i>
+                    Danh mục
+                </a>
+            </div>
             <div class="nav-item nav-product active">
                 <a href="product"><i class="bi bi-cup-straw"></i> Sản phẩm</a>
             </div>
@@ -142,6 +148,7 @@
                     <div class="page-info"></div>
                     <div class="d-flex gap-2 align-items-center">
                         <button id="btn-prev-page" class="btn btn-sm btn-light page-previous"><i class="bi bi-chevron-left"></i></button>
+                        <span id="span-current-page">1</span>
                         <button id="btn-next-page" class="btn btn-sm btn-light page-next"><i class="bi bi-chevron-right"></i></button>
                     </div>
                 </div>
@@ -897,6 +904,7 @@
 
                     $("#btn-prev-page").prop("disabled", gPage <= 1);
                     $("#btn-next-page").prop("disabled", gPage >= responseData.totalPages);
+                    $("#span-current-page").html(responseData.pageNumber);
                 }
 
                 // Navigate based on role
@@ -907,6 +915,7 @@
                         switch (vRole) {
                             case "ADMIN":
                                 $(".nav-account").attr("hidden", false);
+                                $(".nav-category").attr("hidden", false);
                                 break;
                             case "STAFF":
                                 window.location.href = "order";

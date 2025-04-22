@@ -2,6 +2,7 @@ package com.icafe.demo.service.UserService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -75,15 +76,22 @@ public class UserServiceImpl implements IUserService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
 
         return PagingMapper.map(userPage, user -> {
-            User userCreated = userRepository.findById(user.getCreatedBy()).get();
-            User userUpdated = userRepository.findById(user.getUpdatedBy()).get();
+            String usernameCreated = Optional.ofNullable(user.getCreatedBy())
+                    .flatMap(userRepository::findById)
+                    .map(User::getUsername)
+                    .orElse(null);
+
+                    String usernameUpdated = Optional.ofNullable(user.getCreatedBy())
+                    .flatMap(userRepository::findById)
+                    .map(User::getUsername)
+                    .orElse(null);
             return UserResponseDTO.builder()
                     .username(user.getUsername())
                     .role(user.getRole().getRoleName().toString())
                     .timeCreated(user.getCreatedAt().format(formatter))
                     .updatedAt(user.getUpdatedAt().format(formatter))
-                    .createdBy(userCreated.getUsername())
-                    .updatedBy(userUpdated.getUsername())
+                    .createdBy(usernameCreated)
+                    .updatedBy(usernameUpdated)
                     .build();
         });
     }

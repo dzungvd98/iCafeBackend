@@ -82,6 +82,12 @@
             </div>
         </div>
         <div class="wrap-nav">
+            <div class="nav-item nav-category" hidden>
+                <a href="category">
+                    <i class="bi bi-grid"></i>
+                    Danh mục
+                </a>
+            </div>
             <div class="nav-item nav-product">
                 <a href="product">
                     <i class="bi bi-cup-straw"></i>
@@ -120,7 +126,7 @@
                 <button class="btn btn-sm d-none mobile-menu-toggle">
                     <i class="bi bi-list"></i>
                 </button>
-                <span class="fw-medium">Tài chính</span>
+                <span class="fw-medium">Báo cáo</span>
             </div>
 
             <div class="d-flex align-items-center">
@@ -441,6 +447,7 @@
                     switch (role) {
                         case "ADMIN":
                             $(".nav-account").attr("hidden", false);
+                            $(".nav-category").attr("hidden", false);
                             break;
                         case "STAFF":
                             window.location.href = "order";

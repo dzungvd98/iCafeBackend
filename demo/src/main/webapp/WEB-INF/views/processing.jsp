@@ -125,6 +125,12 @@
             </div>
         </div>
         <div class="wrap-nav">
+            <div class="nav-item nav-category">
+                <a href="category">
+                    <i class="bi bi-grid"></i>
+                    Danh mục
+                </a>
+            </div>
             <div class="nav-item nav-product" hidden>
                 <a href="product">
                     <i class="bi bi-cup-straw"></i>
@@ -165,7 +171,7 @@
                 <button class="btn btn-sm d-none mobile-menu-toggle">
                     <i class="bi bi-list"></i>
                 </button>
-                <span class="fw-medium">Menu</span>
+                <span class="fw-medium">Đơn hàng</span>
             </div>
 
             <div class="d-flex align-items-center">

@@ -1,4 +1,4 @@
-const gBASE_URL = "http://localhost:8080";
+const gBASE_URL = "http://160.191.89.57:8080/icafe";
 
 //Xử lý object trả về khi login thành công
 function responseHandler(data) {

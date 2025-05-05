@@ -38,17 +38,16 @@ public class PaymentServiceImpl implements IPaymentService{
         payment.setTransactionId(transactionId);
         payment.setPaidTime(LocalDateTime.now());
 
-        // Thanh toán tiền mặt thì cập nhật luôn thành công
         if (method == PaymentMethod.CASH) {
             payment.setStatus(PaymentStatus.SUCCESS);
-            order.setStatus(OrderStatus.PENDING); // bạn cần định nghĩa enum này
+            order.setStatus(OrderStatus.PENDING); 
         } else {
-            payment.setStatus(PaymentStatus.PENDING); // ví điện tử cần xác nhận sau
+            payment.setStatus(PaymentStatus.PENDING); 
         }
 
-        order.setPayment(payment); // set 2 chiều
+        order.setPayment(payment); 
 
-        orderRepository.save(order); // cascade sẽ tự lưu payment
+        orderRepository.save(order); 
 
         return payment;
     }
@@ -60,12 +59,12 @@ public class PaymentServiceImpl implements IPaymentService{
         payment.setStatus(PaymentStatus.SUCCESS);
         payment.setPaidTime(LocalDateTime.now());
 
-        // Cập nhật đơn hàng
         Order order = payment.getOrder();
         order.setStatus(OrderStatus.PENDING);
 
-        paymentRepository.save(payment); // cascade cũng cập nhật order nếu cần
+        paymentRepository.save(payment);
     }
 
+    
 
 }

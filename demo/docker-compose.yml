@@ -1,4 +1,3 @@
-
 services:
   mysql:
     image: mysql:8.0
@@ -14,16 +13,21 @@ services:
       - '3306:3306'
     networks:
       - backend
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
 
   api-service:
     container_name: api-service
     build:
       context: ./
       dockerfile: Dockerfile
-    env_file:
-      - .env
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/icafe_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=123456
     ports:
-      - '80:8080' # Ánh xạ cổng 80 (host) tới 8080 (container)
+      - '80:8080'
+    volumes:
+      - ./upload:/upload
     depends_on:
       - mysql
     networks:

@@ -1,5 +1,7 @@
 package com.icafe.demo.service.MailService;
 
+import java.io.UnsupportedEncodingException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -23,12 +25,12 @@ public class MailService {
     private String emailFrom;
 
     @SuppressWarnings("null")
-    public String sendEmail(String recipents, String subject, String content, MultipartFile[] files) throws MessagingException {
+    public String sendEmail(String recipents, String subject, String content, MultipartFile[] files) throws MessagingException, UnsupportedEncodingException {
         log.info("Sending email to: {}, subject: {}, content: {}", recipents, subject, content);
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-        helper.setFrom(emailFrom); // TODO
+        helper.setFrom(emailFrom, "ICafe"); //thiết lập tên hiển thị khi gửi mail thay vì ghi rõ địa chỉ mail
 
         if(recipents.contains(",")) {
             helper.setTo(InternetAddress.parse(recipents));

@@ -2,9 +2,11 @@ FROM tomcat:10.1-jdk17
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-ARG JAR_FILE=target/*.war
+ARG WAR_FILE=target/demo-0.0.1-SNAPSHOT.war
 
-COPY ${JAR_FILE} /usr/local/tomcat/webapps/ROOT.war
+COPY ${WAR_FILE} /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
+
+CMD ["catalina.sh", "run"]
 

@@ -34,20 +34,22 @@ import com.icafe.demo.models.User;
 import com.icafe.demo.repository.IOrderRepository;
 import com.icafe.demo.repository.IProductVariantRepository;
 import com.icafe.demo.repository.IUserRepository;
+import com.icafe.demo.service.PaymentService.IPaymentService;
 import com.icafe.demo.specification.OrderSpecification;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService implements IOrderService {
-    @Autowired
-    private IOrderRepository orderRepository;
+    
+    private final IOrderRepository orderRepository;
+    private final IProductVariantRepository productVariantRepository;
+    private final IUserRepository userRepository;
+    private final IPaymentService paymentService;
 
-    @Autowired
-    private IProductVariantRepository productVariantRepository;
-
-    @Autowired
-    private IUserRepository userRepository;
+    
 
     @Override
     public PagingDataDTO<OrderResponseDTO> getOrders(String keyword, int page, int size) {

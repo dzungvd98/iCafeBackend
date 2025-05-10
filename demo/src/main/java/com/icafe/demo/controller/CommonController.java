@@ -32,8 +32,7 @@ public class CommonController {
         } catch (Exception e) {
             log.error("Sending email was failure, errorMessage={}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-                                    
+        }                   
     }
-    
+
 }

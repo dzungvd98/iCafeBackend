@@ -31,7 +31,7 @@ public class Payment {
     private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "order_id", nullable = false, unique = true)
+    @JoinColumn(name = "order_code", referencedColumnName = "order_code", nullable = false, unique = true)
     @JsonBackReference
     private Order order;  
 

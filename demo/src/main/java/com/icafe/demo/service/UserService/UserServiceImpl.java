@@ -1,10 +1,10 @@
 package com.icafe.demo.service.UserService;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,25 +22,34 @@ import com.icafe.demo.models.User;
 import com.icafe.demo.repository.IRoleRepository;
 import com.icafe.demo.repository.IUserRepository;
 import com.icafe.demo.security.UserPrincipal;
+import com.icafe.demo.service.MailService.MailService;
 import com.icafe.demo.specification.UserSpecification;
 
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
 
-    @Autowired
-    private IUserRepository userRepository;
-
-    @Autowired
-    private IRoleRepository roleRepository;
-
+    private final IUserRepository userRepository;
+    private final IRoleRepository roleRepository;
+    private final MailService mailService;
     private final String ROLE_STAFF = "STAFF";
 
     @Override
-    public User createUser(UserDTO user) {
-        User found = userRepository.findByUsername(user.getUsername());
-        if (found != null) throw new EntityExistsException("Username already exist!");
+    public int createUser(UserDTO user) throws UnsupportedEncodingException, MessagingException  {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new EntityExistsException("Username already exists!");
+        }
+        
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new EntityExistsException("Email already exists!");
+        }
+
         User newUser = new User();
         newUser.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         newUser.setUsername(user.getUsername());
@@ -51,7 +60,15 @@ public class UserServiceImpl implements IUserService {
         newUser = userRepository.saveAndFlush(newUser);
         newUser.setCreatedBy(newUser.getId());
         newUser.setUpdatedBy(newUser.getId());
-        return userRepository.save(newUser);
+        userRepository.save(newUser);
+        
+        if(newUser.getId() != null) {
+            mailService.sendConfirmLink(newUser.getEmail(), newUser.getId(), "secretCode");
+        }
+
+        log.info("User has save!");
+
+        return newUser.getId();
     }
 
     @Override

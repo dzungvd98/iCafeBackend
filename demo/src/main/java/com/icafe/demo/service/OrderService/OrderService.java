@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +33,6 @@ import com.icafe.demo.models.User;
 import com.icafe.demo.repository.IOrderRepository;
 import com.icafe.demo.repository.IProductVariantRepository;
 import com.icafe.demo.repository.IUserRepository;
-import com.icafe.demo.service.PaymentService.IPaymentService;
 import com.icafe.demo.specification.OrderSpecification;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -47,9 +45,6 @@ public class OrderService implements IOrderService {
     private final IOrderRepository orderRepository;
     private final IProductVariantRepository productVariantRepository;
     private final IUserRepository userRepository;
-    private final IPaymentService paymentService;
-
-    
 
     @Override
     public PagingDataDTO<OrderResponseDTO> getOrders(String keyword, int page, int size) {

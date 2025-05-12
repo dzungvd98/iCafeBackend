@@ -58,14 +58,15 @@ public class MailService {
         return "sent";
     }
 
-    public void sendConfirmLink(String email, Integer id, String string) throws MessagingException, UnsupportedEncodingException {
+    public void sendConfirmLink(String email, Integer userId, String secretCode) throws MessagingException, UnsupportedEncodingException {
         log.info("Sending email confirm account");
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());       
         
         Context context = new Context();
         
-        String linkConfirm = "/users/userid/?secretCode=";
+
+        String linkConfirm = String.format("http://localhost:8080/api/v1/users/%s/confirm?secretCode=%s", userId, secretCode);
 
         Map<String, Object> properties = new HashMap<>();
         properties.put("linkConfirm", linkConfirm);
@@ -80,6 +81,6 @@ public class MailService {
 
         mailSender.send(message);
 
-        log.info("Email sent!");
+        log.info("Email sent to {}!", email);
     }
 }

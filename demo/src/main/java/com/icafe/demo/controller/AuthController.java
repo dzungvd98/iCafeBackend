@@ -1,15 +1,18 @@
 package com.icafe.demo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.icafe.demo.dto.UserChangePasswordDTO;
@@ -23,32 +26,47 @@ import com.icafe.demo.security.UserPrincipal;
 import com.icafe.demo.service.TokenService.ITokenService;
 import com.icafe.demo.service.UserService.IUserService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 
 @RestController
 @RequestMapping("api/v1/users")
 @CrossOrigin
+@Slf4j
+@Tag(name = "Authentication Controller")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    private IUserRepository userRepository;
-
-    @Autowired
-    private IUserService userService;
-
-    @Autowired
-    private ITokenService tokenService;
-
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final IUserRepository userRepository;
+    private final IUserService userService;
+    private final ITokenService tokenService;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerApi(@RequestBody UserDTO user) {
         try {
-            userService.createUser(user);
-            return ResponseEntity.ok("Account created successfull!");
+            return ResponseEntity.ok(userService.createUser(user));
         } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/{userId}/confirm")
+    public ResponseEntity<?> confirmUser(@Min(1) @PathVariable int userId, @RequestParam String secretCode) {
+        log.info("Confirm user with id = {}, secretCode = {}", userId, secretCode);
+        try {
+            userService.confirmUser(userId, secretCode);
+            return ResponseEntity
+                .status(HttpStatus.FOUND) // 302 Redirect
+                .header(HttpHeaders.LOCATION, "/login")
+                .build();
+        } catch (Exception e) {
+            log.error("errorMessage={}", e.getMessage(), e.getCause());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        } 
     }
 
     // API login

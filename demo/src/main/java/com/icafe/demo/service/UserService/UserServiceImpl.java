@@ -27,6 +27,7 @@ import com.icafe.demo.specification.UserSpecification;
 
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,7 +48,7 @@ public class UserServiceImpl implements IUserService {
         }
         
         if (userRepository.existsByEmail(user.getEmail())) {
-            throw new EntityExistsException("Email already exists!");
+            throw new EntityExistsException("Email have been used!");
         }
 
         User newUser = new User();
@@ -60,7 +61,9 @@ public class UserServiceImpl implements IUserService {
         newUser = userRepository.saveAndFlush(newUser);
         newUser.setCreatedBy(newUser.getId());
         newUser.setUpdatedBy(newUser.getId());
+        newUser.setEmail(user.getEmail());
         userRepository.save(newUser);
+
         
         if(newUser.getId() != null) {
             mailService.sendConfirmLink(newUser.getEmail(), newUser.getId(), "secretCode");
@@ -81,6 +84,7 @@ public class UserServiceImpl implements IUserService {
             userPrincipal.setPassword(user.getPassword());
             userPrincipal.setRole(user.getRole().getRoleName());
             userPrincipal.setEmail(user.getEmail());
+            userPrincipal.setStatus(user.getStatus());
         }
         return userPrincipal;
     }
@@ -143,6 +147,32 @@ public class UserServiceImpl implements IUserService {
         if (user == null) throw new EntityExistsException("User not found!");
         user.setDeleted(true);
         userRepository.save(user);
+    }
+
+    @Override
+    public void confirmUser(int userId, String secretCode) {
+        log.info("Confirmed!");
+    }
+
+    @Override
+    public User getByUserName(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public UserPrincipal getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new EntityNotFoundException("Email not found!"));
+        UserPrincipal userPrincipal = new UserPrincipal();
+        if (null != user) {
+            userPrincipal.setUserId(user.getId());
+            userPrincipal.setUsername(user.getUsername());
+            userPrincipal.setPassword(user.getPassword());
+            userPrincipal.setRole(user.getRole().getRoleName());
+            userPrincipal.setEmail(user.getEmail());
+            userPrincipal.setStatus(user.getStatus());
+        }
+        return userPrincipal;
     }
 
 }

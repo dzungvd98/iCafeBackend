@@ -15,8 +15,11 @@ import jakarta.mail.MessagingException;
 public interface IUserService {
     public int createUser(UserDTO user) throws UnsupportedEncodingException, MessagingException;
     public UserPrincipal findByUsername(String username);
+    public UserPrincipal getUserByEmail(String email);
+    public User getByUserName(String username);
     public PagingDataDTO<UserResponseDTO> getListUsers(String keyword, int page, int size); 
     public User createUserByAdmin(UserRequestDTO userRequestDTO);
     public User updateUserByAdmin(UserRequestDTO dto);
     public void deleteUserByAdmin(String username);
+    public void confirmUser(int userId, String secretCode);
 }

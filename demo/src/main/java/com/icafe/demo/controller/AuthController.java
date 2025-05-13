@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.icafe.demo.dto.SignInRequest;
+import com.icafe.demo.dto.TokenResponse;
 import com.icafe.demo.dto.UserChangePasswordDTO;
 import com.icafe.demo.dto.UserDTO;
 import com.icafe.demo.dto.UserNewPasswordDTO;
@@ -23,10 +25,12 @@ import com.icafe.demo.models.User;
 import com.icafe.demo.repository.IUserRepository;
 import com.icafe.demo.security.JwtUtil;
 import com.icafe.demo.security.UserPrincipal;
+import com.icafe.demo.service.AuthenticationService.AuthenticationServiceImpl;
 import com.icafe.demo.service.TokenService.ITokenService;
 import com.icafe.demo.service.UserService.IUserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +47,8 @@ public class AuthController {
     private final IUserService userService;
     private final ITokenService tokenService;
     private final JwtUtil jwtUtil;
+    private final AuthenticationServiceImpl authenticationService;
+
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerApi(@RequestBody UserDTO user) {
@@ -142,6 +148,16 @@ public class AuthController {
         String tokenStr = authHeader.substring(7).trim();
         tokenService.deleteToken(tokenStr);
         return ResponseEntity.ok("Logged out successfully");
+    }
+
+    @PostMapping("/access-token")
+    public ResponseEntity<TokenResponse> accessToken(@RequestBody SignInRequest request) {
+        return ResponseEntity.ok(authenticationService.accessToken(request));
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<TokenResponse> refreshToken(HttpServletRequest request) {
+        return ResponseEntity.ok(authenticationService.refreshToken(request));
     }
     
     

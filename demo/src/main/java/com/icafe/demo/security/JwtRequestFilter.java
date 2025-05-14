@@ -12,6 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.icafe.demo.entity.Token;
 import com.icafe.demo.service.TokenService.ITokenService;
+import com.icafe.demo.util.TokenType;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,8 +40,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         UserPrincipal user = null;
         Token token = null;
+        String jwt = null;
         if (StringUtils.hasText(authorizationHeader) && authorizationHeader.startsWith("Token ")) {
-            String jwt = authorizationHeader.substring(6);
+            jwt = authorizationHeader.substring(6);
+            
+            // TokenType tokenType = jwtUtil.extractTokenType(jwt);
+            // if(tokenType != TokenType.ACCESS_TOKEN) {
+            //     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Only access tokens are allowed");
+            //     return;
+            // }
             user = jwtUtil.getUserFromToken(jwt);
             token = verificationTokenService.findByToken(jwt);
         }

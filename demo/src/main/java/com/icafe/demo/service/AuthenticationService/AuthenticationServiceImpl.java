@@ -8,6 +8,8 @@ import com.icafe.demo.dto.ResetPasswordDTO;
 import com.icafe.demo.dto.SignInRequest;
 import com.icafe.demo.dto.TokenResponse;
 import com.icafe.demo.entity.RedisToken;
+import com.icafe.demo.models.User;
+import com.icafe.demo.repository.IUserRepository;
 import com.icafe.demo.security.UserPrincipal;
 import com.icafe.demo.service.JwtService.JwtService;
 import com.icafe.demo.service.RedisTokenService.RedisTokenService;
@@ -30,6 +32,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService{
     private final RedisTokenService redisTokenService;
     private final IUserService userService;
     private final JwtService jwtService;
+    private final IUserRepository userRepository;
 
     @Override
     public TokenResponse accessToken(SignInRequest signInRequest) {
@@ -151,6 +154,20 @@ public class AuthenticationServiceImpl implements IAuthenticationService{
         }
 
         return user;
+    }
+
+    @Override
+    public String confirmAccount(String username, String secretCode) {
+        log.info("---------- Activated ----------");
+        User user = userService.getByUserName(username);
+        if(secretCode.equals(user.getSecretCode())) {
+            user.setActived(true);
+            user.setSecretCode("");
+        } else {
+            throw new RuntimeException("Secret code not match!");
+        }
+        userRepository.save(user);
+        return "Actived";
     }
 
     

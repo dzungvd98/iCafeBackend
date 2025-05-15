@@ -13,4 +13,6 @@ public interface IAuthenticationService {
     String forgotPassword(String email);
     String resetPassword(String secretKey);
     String changePassword(ResetPasswordDTO request);
+    String confirmAccount(String username, String secretCode);
+
 }

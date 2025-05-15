@@ -25,13 +25,14 @@ import com.icafe.demo.models.User;
 import com.icafe.demo.repository.IUserRepository;
 import com.icafe.demo.security.JwtUtil;
 import com.icafe.demo.security.UserPrincipal;
-import com.icafe.demo.service.AuthenticationService.AuthenticationServiceImpl;
+import com.icafe.demo.service.AuthenticationService.IAuthenticationService;
 import com.icafe.demo.service.TokenService.ITokenService;
 import com.icafe.demo.service.UserService.IUserService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,7 +48,7 @@ public class AuthController {
     private final IUserService userService;
     private final ITokenService tokenService;
     private final JwtUtil jwtUtil;
-    private final AuthenticationServiceImpl authenticationService;
+    private final IAuthenticationService authenticationService;
 
 
     @PostMapping("/register")
@@ -60,11 +61,11 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/{userId}/confirm")
-    public ResponseEntity<?> confirmUser(@Min(1) @PathVariable int userId, @RequestParam String secretCode) {
-        log.info("Confirm user with id = {}, secretCode = {}", userId, secretCode);
+    @GetMapping("/{username}/confirm")
+    public ResponseEntity<?> confirmUser(@NotBlank @PathVariable String username, @RequestParam String secretCode) {
+        log.info("Confirm user with id = {}, secretCode = {}", username, secretCode);
         try {
-            userService.confirmUser(userId, secretCode);
+            authenticationService.confirmAccount(username, secretCode);
             return ResponseEntity
                 .status(HttpStatus.FOUND) // 302 Redirect
                 .header(HttpHeaders.LOCATION, "/login")

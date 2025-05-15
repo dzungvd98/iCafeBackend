@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import com.icafe.demo.repository.IUserRepository;
 import com.icafe.demo.security.UserPrincipal;
 import com.icafe.demo.service.MailService.MailService;
 import com.icafe.demo.specification.UserSpecification;
+import com.icafe.demo.util.VerifyCodeGenerator;
 
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityExistsException;
@@ -39,6 +41,7 @@ public class UserServiceImpl implements IUserService {
     private final IUserRepository userRepository;
     private final IRoleRepository roleRepository;
     private final MailService mailService;
+    private final KafkaTemplate<String, String> kafkaTemplate;
     private final String ROLE_STAFF = "STAFF";
 
     @Override
@@ -62,11 +65,21 @@ public class UserServiceImpl implements IUserService {
         newUser.setCreatedBy(newUser.getId());
         newUser.setUpdatedBy(newUser.getId());
         newUser.setEmail(user.getEmail());
+
+        String verifyCode = VerifyCodeGenerator.generateAlphaNumericCode();
+        newUser.setActived(false);
+        newUser.setSecretCode(verifyCode);
         userRepository.save(newUser);
 
         
         if(newUser.getId() != null) {
-            mailService.sendConfirmLink(newUser.getEmail(), newUser.getId(), "secretCode");
+            // thời gian lâu
+            //mailService.sendConfirmLink(newUser.getEmail(), newUser.getId(), "secretCode");
+            
+            
+            // Dùng kafka optimize //Json in format is use usually
+            String message = String.format("%s,%s,%s", user.getEmail(), user.getUsername(), verifyCode);
+            kafkaTemplate.send("confirm-account-topic", message);
         }
 
         log.info("User has save!");

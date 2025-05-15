@@ -46,4 +46,9 @@ public class User extends BaseEntity {
     @Column(name = "status")
     private UserStatus status;
 
+    @Column(name = "is_actived")
+    private boolean isActived;
+
+    @Column(name = "secret_code")
+    private String secretCode;
 }

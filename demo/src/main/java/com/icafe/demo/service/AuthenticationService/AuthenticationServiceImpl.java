@@ -2,6 +2,7 @@ package com.icafe.demo.service.AuthenticationService;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.icafe.demo.dto.ResetPasswordDTO;
@@ -31,6 +32,7 @@ public class AuthenticationServiceImpl implements IAuthenticationService{
     private final AuthenticationManager authenticationManager;
     private final RedisTokenService redisTokenService;
     private final IUserService userService;
+    private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final IUserRepository userRepository;
 
@@ -139,8 +141,19 @@ public class AuthenticationServiceImpl implements IAuthenticationService{
 
     @Override
     public String changePassword(ResetPasswordDTO request) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'changePassword'");
+        log.info("---------- changePassword ----------");
+
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("Passwords do not match");
+        }
+
+        // get user by reset token
+        var user = validateToken(request.getSecretKey());
+
+        // update password
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        return "Changed";
     }
 
     private UserPrincipal validateToken(String token) {

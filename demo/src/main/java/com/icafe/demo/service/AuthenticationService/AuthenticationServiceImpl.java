@@ -22,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.springframework.http.HttpHeaders.REFERER;
+
+
 import static com.icafe.demo.util.TokenType.REFRESH_TOKEN;
 
 @Slf4j
@@ -43,7 +45,11 @@ public class AuthenticationServiceImpl implements IAuthenticationService{
         UserPrincipal user = userService.findByUsername(signInRequest.getUsername());
     
         if(!user.isEnabled()) {
-            throw new RuntimeException("User not active");
+            throw new RuntimeException("User not active!");
+        }
+
+        if(!user.isDeleted()) {
+            throw new RuntimeException("User is deleted!");
         }
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword(), user.getAuthorities()));
@@ -183,5 +189,4 @@ public class AuthenticationServiceImpl implements IAuthenticationService{
         return "Actived";
     }
 
-    
 }
